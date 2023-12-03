@@ -1,27 +1,27 @@
 ﻿# -*- coding: utf-8 -*-
 #constant values
-#Copyright (C) 20XX anonimous <anonimous@sample.com>
+#Copyright (C) 2023 Yukio Nozawa
 
 import wx
 
 #アプリケーション基本情報
-APP_FULL_NAME = "test application"#アプリケーションの完全な名前
-APP_NAME="test"#アプリケーションの名前
+APP_FULL_NAME = "Parametric Video Processor"#アプリケーションの完全な名前
+APP_NAME="PVP"#アプリケーションの名前
 APP_ICON = None
 APP_VERSION="0.0.1"
 APP_LAST_RELEASE_DATE="9999-99-99"
-APP_COPYRIGHT_YEAR="20xx"
+APP_COPYRIGHT_YEAR="2023"
 APP_LICENSE="Apache License 2.0"
-APP_DEVELOPERS="anonymous"
-APP_DEVELOPERS_URL="https://example.com/"
-APP_DETAILS_URL="https://example.com/template"
+APP_DEVELOPERS="Yukio Nozawa"
+APP_DEVELOPERS_URL="https://actlab.org/"
+APP_DETAILS_URL="https://actlab.org/software/PVP"
 APP_COPYRIGHT_MESSAGE = "Copyright (c) %s %s All lights reserved." % (APP_COPYRIGHT_YEAR, APP_DEVELOPERS)
 
 SUPPORTING_LANGUAGE={"ja-JP": "日本語","en-US": "English"}
 
 #各種ファイル名
-LOG_PREFIX="app"
-LOG_FILE_NAME="application.log"
+LOG_PREFIX="pvp"
+LOG_FILE_NAME="pvp.log"
 SETTING_FILE_NAME="settings.ini"
 KEYMAP_FILE_NAME="keymap.ini"
 
