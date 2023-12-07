@@ -9,7 +9,7 @@ class PresetImage:
 
 
 # Defines preset image information
-availablePresetImages  [
+availablePresetImages = [
     PresetImage("cat", "猫", os.path.join("data", "preset_images", "cat.jpg")),
 ]
 

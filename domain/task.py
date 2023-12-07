@@ -1,3 +1,5 @@
+from .step import *
+
 # TaskStepDefinition defines each step in a task
 class TaskStepDefinition:
     def __init__(self, stepClass, isRequired):
@@ -45,10 +47,10 @@ class TaskBase:
             # end if
         # end for
         descriptions = [self._steps[i].stepDescription() for i in stepIndexes]
-        return ["%s のうち、どれか一つを入力してください。"　% "、".join(descriptions)]
+        return ["%s のうち、どれか一つを入力してください。" % "、".join(descriptions)]
 
 
-class MakeTweetableAudioTask(taskBase):
+class MakeTweetableAudioTask(TaskBase):
     _stepDefinitions = [
         defineRequiredStep(InputSingleAudioFileStep),
         defineOptionalStep(InputPresetImageStep),
@@ -59,4 +61,5 @@ class MakeTweetableAudioTask(taskBase):
     def validate(self):
         messages = super().validate()
         messages.extend(self._ensureOneOf([1, 2]))
+        return messages
 

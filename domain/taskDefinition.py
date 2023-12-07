@@ -1,5 +1,7 @@
+from .task import *
+
 # TaskDefinition defines a task supported by this software
-class Task:
+class TaskDefinition:
     def __init__(self, taskClass, displayName, description):
         self.taskClass = taskClass
         self.displayName = displayName
