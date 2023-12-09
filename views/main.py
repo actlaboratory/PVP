@@ -13,7 +13,7 @@ import menuItemsStore
 from .base import *
 from simpleDialog import *
 
-from views import globalKeyConfig, settingsDialog, versionDialog, ViewCreator
+from views import globalKeyConfig, settingsDialog, versionDialog, stepInputDialog
 
 import domain
 
@@ -42,8 +42,8 @@ class MainView(BaseView):
 		for task in domain.supportedTasks:
 			self.whatToDo.Append([task.displayName, task.description])
 		# end append task
-		self.ok = vc.okbutton(_("開始"))
-		self.exit = vc.cancelbutton(_("終了"))
+		self.ok = vc.okbutton(_("開始"), self.events.startTask)
+		self.exit = vc.cancelbutton(_("終了"), event = self.events.exit)
 
 
 class Menu(BaseMenu):
@@ -144,3 +144,14 @@ class Events(BaseEvents):
 				newMap[identifier.upper()][menuData[name]] = ""
 		newMap.write()
 		return True
+
+	def startTask(self, event):
+		selected = self.parent.whatToDo.GetFirstSelected()
+		if selected == -1:
+			return
+		# end if
+		taskDef = domain.supportedTasks[selected]
+		task = taskDef.generateNewTask()
+		d = stepInputDialog.StepInputDialog(task)
+		d.Initialize()
+		d.Show()

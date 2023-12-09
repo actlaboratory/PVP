@@ -7,6 +7,9 @@ class TaskDefinition:
         self.displayName = displayName
         self.description = description
 
+    def generateNewTask(self):
+        return self.taskClass()
+
 
 # Defines a list of supported tasks in this software
 supportedTasks = [

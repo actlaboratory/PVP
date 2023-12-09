@@ -26,6 +26,13 @@ class TaskBase:
         for s in self._stepDefinitions:
             self._steps.append(s.stepClass(s.isRequired))
 
+    def numberOfSteps(self):
+        return len(self._steps)
+
+    def nthStep(self, n):
+        # convert to 0-based index
+        return self._steps[n - 1]
+
     def validate(self):
         messages = []
         messages.extend(self._ensureRequiredSteps())
