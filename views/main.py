@@ -13,10 +13,9 @@ import menuItemsStore
 from .base import *
 from simpleDialog import *
 
-from views import globalKeyConfig
-from views import settingsDialog
-from views import versionDialog
+from views import globalKeyConfig, settingsDialog, versionDialog, ViewCreator
 
+import domain
 
 class MainView(BaseView):
 	def __init__(self):
@@ -32,6 +31,19 @@ class MainView(BaseView):
 			self.app.config.getint(self.identifier, "positionY", 50, 0)
 		)
 		self.InstallMenuEvent(Menu(self.identifier), self.events.OnMenuSelect)
+		self.InstallControls()
+
+
+	def InstallControls(self):
+		vc = self.creator
+		self.whatToDo, unused = vc.listCtrl(_("今日は何をしますか？"))
+		self.whatToDo.AppendColumn(_("タスク"), width = 600)
+		self.whatToDo.AppendColumn(_("説明"), width = 600)
+		for task in domain.supportedTasks:
+			self.whatToDo.Append([task.displayName, task.description])
+		# end append task
+		self.ok = vc.okbutton(_("開始"))
+		self.exit = vc.cancelbutton(_("終了"))
 
 
 class Menu(BaseMenu):
