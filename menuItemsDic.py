@@ -9,7 +9,6 @@ def getValueString(ref_id):
 	return re.sub("&", "", s)
 
 dic={
-	"FILE_EXAMPLE":_("テストダイアログを閲覧")+"...",
 	"FILE_EXIT": _("終了(&X)"),
 
 	"OPTION_OPTION":_("オプション(&O)")+"...",

@@ -14,7 +14,6 @@ from .base import *
 from simpleDialog import *
 
 from views import globalKeyConfig
-from views import sample
 from views import settingsDialog
 from views import versionDialog
 
@@ -49,7 +48,6 @@ class Menu(BaseMenu):
 
 		# ファイルメニュー
 		self.RegisterMenuCommand(self.hFileMenu, {
-			"FILE_EXAMPLE": self.parent.events.example,
 			"FILE_EXIT": self.parent.events.exit,
 		})
 
@@ -73,11 +71,6 @@ class Menu(BaseMenu):
 
 
 class Events(BaseEvents):
-	def example(self, event):
-		d = sample.Dialog()
-		d.Initialize()
-		r = d.Show()
-
 	def exit(self, event):
 		self.parent.hFrame.Close()
 
