@@ -16,3 +16,9 @@ class OutputTweetableVideoFile(TabPanelBase):
 		) as dlg:
 			if dlg.ShowModal() != wx.ID_CANCEL:
 				self.fileNameInput.SetValue(dlg.GetPath())
+
+	def getValueOrNone(self):
+		"""入力値: strまたはNone"""
+		if self.fileNameInput.GetValue() == "":
+			return None
+		return self.fileNameInput.GetValue()
