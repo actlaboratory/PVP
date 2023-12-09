@@ -1,13 +1,13 @@
-# SupportedInputAudioTypes represents the supported audio types for input
-supportedInputAudioTypes = [
+# supportedAudioFileTypes represents the supported audio types for input or output
+supportedAudioFileTypes = [
     "wav",
     "mp3",
     "ogg",
     "flac"
 ]
 
-# supportedInputImageTypes represents the supported image types for input
-supportedInputImageTypes = [
+# supportedImageFileTypes represents the supported image types for input or output
+supportedImageFileTypes = [
     "jpg",
     "jpeg",
     "png",
