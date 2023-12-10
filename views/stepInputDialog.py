@@ -41,11 +41,12 @@ class StepInputDialog(BaseDialog):
 		self.creator=views.ViewCreator.ViewCreator(self.viewMode,self.panel,self.sizer,wx.VERTICAL,20)
 		self.tabCtrl = self.creator.tabCtrl(_("ステップ"), self.onTabChanged)
 		self.tabCtrl.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.beforeTabChange)
-		self.next = self.creator.okbutton(_("次のステップ"))
-		self.back = self.creator.cancelbutton(_("前のステップ"))
+		self.next = self.creator.button(_("次のステップ"), event=self.onNextButtonClick)
+		self.back = self.creator.button(_("前のステップ"), event=self.onBackButtonClick)
+		self.abort = self.creator.cancelbutton(_("中止"))
 		self.setupTabs()
 		self.toNextStage()
-		self.updateButtonLabels()
+		self.updateButtonAttributes()
 
 	def nthPanel(self, n):
 		"""指定されたステージのパネルを返す。"""
@@ -86,7 +87,7 @@ class StepInputDialog(BaseDialog):
 	def onTabChanged(self, event):
 		"""タブが変更されたあとの処理。currentStageへの反映"""
 		self.currentStage = event.GetSelection() + 1
-		self.updateButtonLabels()
+		self.updateButtonAttributes()
 
 	def toNextStage(self):
 		"""次のステージに進む。"""
@@ -95,6 +96,15 @@ class StepInputDialog(BaseDialog):
 			return
 		# end 終了
 		self.currentStage += 1
+		self.tabCtrl.SetSelection(self.currentStage - 1)
+
+	def toPreviousStage(self):
+		"""前のステージに戻る。"""
+		if self.currentStage == 1:
+			self.Destroy()
+			return
+		# end 終了
+		self.currentStage -= 1
 		self.tabCtrl.SetSelection(self.currentStage - 1)
 
 	def setupTabs(self):
@@ -115,16 +125,30 @@ class StepInputDialog(BaseDialog):
 		panelClass = panelMap[step.stepType()]
 		return panelClass(self.tabCtrl, step, stage, self.totalStages)
 
-	def updateButtonLabels(self):
-		"""現在のステージに応じて、ボタンのラベルを変更する。"""
+	def updateButtonAttributes(self):
+		"""現在のステージに応じて、ボタンのラベルや活性状態を変更する。"""
 		if self.currentStage == self.totalStages:
 			self.next.SetLabel(_("完了"))
 		else:
 			self.next.SetLabel(_("次のステップ"))
 		if self.currentStage == 1:
-			self.back.SetLabel(_("キャンセル"))
+			self.back.Disable()
 		else:
-			self.back.SetLabel(_("前のステップ"))
+			self.back.Enable()
+
+	def onNextButtonClick(self, event):
+		if self.currentStage == self.totalStages:
+			return
+		# end 最後のステップ
+		self.toNextStage()
+		self.updateButtonAttributes()
+
+	def onBackButtonClick(self, event):
+		if self.currentStage == 1:
+			return
+		# end 最初のステップ
+		self.toPreviousStage()
+		self.updateButtonAttributes()
 
 	def Destroy(self, events = None):
 		self.log.debug("destroy")
