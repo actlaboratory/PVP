@@ -5,8 +5,10 @@ from .tabPanelBase import *
 
 class InputSingleImageFile(TabPanelBase):
 	def InstallControls(self):
-		self.fileNameInput, unused = self.creator.inputbox(_("画像ファイル"), x = 300)
-		self.browseButton = self.creator.button(_("参照"), event=self.onBrowseButtonClick)
+		fileInputArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
+		self.fileNameInput, unused = fileInputArea.inputbox(_("画像ファイル"), x = 500, proportion=1, textLayout=wx.VERTICAL, margin=0)
+		self.fileNameInput.hideScrollBar(wx.HORIZONTAL)
+		self.browseButton = fileInputArea.button(_("参照"), event=self.onBrowseButtonClick,sizerFlag=wx.ALIGN_BOTTOM | wx.BOTTOM, margin=3)
 
 	def onBrowseButtonClick(self, event):
 		extensions = ";".join(["*." + x for x in domain.supportedImageFileTypes])

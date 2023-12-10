@@ -36,14 +36,16 @@ class MainView(BaseView):
 
 	def InstallControls(self):
 		vc = self.creator
-		self.whatToDo, unused = vc.listCtrl(_("今日は何をしますか？"))
-		self.whatToDo.AppendColumn(_("タスク"), width = 600)
-		self.whatToDo.AppendColumn(_("説明"), width = 600)
+		self.whatToDo, unused = vc.listCtrl(_("今日は何をしますか？"), proportion=1, sizerFlag=wx.EXPAND)
+		self.whatToDo.AppendColumn(_("タスク"), width = 450)
+		self.whatToDo.AppendColumn(_("説明"), width = 1000)
 		for task in domain.supportedTasks:
 			self.whatToDo.Append([task.displayName, task.description])
 		# end append task
-		self.ok = vc.okbutton(_("開始"), self.events.startTask)
-		self.exit = vc.cancelbutton(_("終了"), event = self.events.exit)
+
+		buttonArea = views.ViewCreator.ViewCreator(self.viewMode, vc.GetPanel(), vc.GetSizer(), wx.HORIZONTAL, style=wx.ALIGN_RIGHT)
+		self.ok = buttonArea.okbutton(_("開始"), self.events.startTask)
+		self.exit = buttonArea.cancelbutton(_("終了"), event = self.events.exit)
 
 
 class Menu(BaseMenu):

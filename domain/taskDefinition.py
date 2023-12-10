@@ -15,7 +15,7 @@ class TaskDefinition:
 supportedTasks = [
     TaskDefinition(
         MakeTweetableAudioTask,
-        "音声ファイルをTwitterに上げたい",
-        "音声ファイルを指定して、Twitterに上げるための動画ファイルを作成します。",
+        "音声ファイルをTwitter投稿",
+        "音声ファイルからTwitter投稿用の動画ファイルを作成します。",
     )
 ]

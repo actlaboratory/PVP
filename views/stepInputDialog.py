@@ -20,30 +20,33 @@ panelMap = {
 
 class StepInputDialog(BaseDialog):
 	def __init__(self, task):
-		#まだglobalVars.appが未精製の状態での軌道の可能性があるのであえて呼ばない
-		#super().__init__()
 		self.identifier="stepInputDialog"
-		self.log=getLogger("%s.%s" % (constants.LOG_PREFIX,self.identifier))
+		super().__init__(self.identifier)
+
 		self.task = task
 		self.currentStage = 0
 		self.totalStages = task.numberOfSteps()
-		self.viewMode="white"
 		self.stepPanels = []
 
 	def Initialize(self):
 		self.log.debug("created")
-		super().Initialize(None, _("入力"))
+		super().Initialize(self.app.hMainView.hFrame, _("入力"))
 		self.InstallControls()
 		return True
 
 	def InstallControls(self):
 		"""いろんなwidgetを設置する。"""
-		self.creator=views.ViewCreator.ViewCreator(self.viewMode,self.panel,self.sizer,wx.VERTICAL,20)
-		self.tabCtrl = self.creator.tabCtrl(_("ステップ"), self.onTabChanged)
+		self.creator=views.ViewCreator.ViewCreator(self.viewMode, self.panel, self.sizer, wx.VERTICAL, 20, style=wx.EXPAND, margin=20)
+		self.tabCtrl = self.creator.tabCtrl(_("ステップ"), self.onTabChanged, style=wx.NB_NOPAGETHEME|wx.NB_MULTILINE, proportion=1, sizerFlag=wx.EXPAND)
 		self.tabCtrl.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.beforeTabChange)
-		self.next = self.creator.button(_("次のステップ"), event=self.onNextButtonClick)
-		self.back = self.creator.button(_("前のステップ"), event=self.onBackButtonClick)
-		self.abort = self.creator.cancelbutton(_("中止"))
+
+		pageSelectButtonArea = views.ViewCreator.ViewCreator(self.viewMode, self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL, margin=20)
+		self.next = pageSelectButtonArea.button(_("次のステップ"), event=self.onNextButtonClick)
+		self.back = pageSelectButtonArea.button(_("前のステップ"), event=self.onBackButtonClick)
+
+		bottomButtonArea = views.ViewCreator.ViewCreator(self.viewMode, self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALIGN_RIGHT, margin=20)
+		self.abort = bottomButtonArea.cancelbutton(_("中止"))
+
 		self.setupTabs()
 		self.toNextStage()
 		self.updateButtonAttributes()
@@ -115,15 +118,12 @@ class StepInputDialog(BaseDialog):
 
 	def addTab(self, stage, step):
 		"""指定されたステージのタブを追加する。"""
-		panel = self.makePanel(step, stage)
 		requirement = _("必須") if step.isRequired() else _("任意")
-		self.tabCtrl.AddPage(panel.hPanel, "%d/%d %s (%s)" % (stage, self.totalStages, step.stepDescription(), requirement))
-		self.stepPanels.append(panel)
-
-	def makePanel(self, step, stage):
-		"""指定されたステップに対応するパネルを作成する。"""
+		name = "%d/%d %s (%s)" % (stage, self.totalStages, step.stepDescription(), requirement)
+		vc = views.ViewCreator.ViewCreator(self.viewMode, self.tabCtrl, None, wx.VERTICAL, 20, name, style=wx.EXPAND|wx.ALL, proportion=1)
 		panelClass = panelMap[step.stepType()]
-		return panelClass(self.tabCtrl, step, stage, self.totalStages)
+		panel = panelClass(vc, step, stage, self.totalStages)
+		self.stepPanels.append(panel)
 
 	def updateButtonAttributes(self):
 		"""現在のステージに応じて、ボタンのラベルや活性状態を変更する。"""
