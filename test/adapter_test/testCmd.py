@@ -2,20 +2,42 @@ import queue
 import unittest
 import adapter
 
-class DummyExitProcess():
-    def __init__(self, stdout, stderr, returncode):
+class DummyPopen:
+    def __init__(self, stdout, stderr, returncode, waitForSignal):
         self.stdout = stdout
         self.stderr = stderr
         self.returncode = returncode
+        self.waitForSignal = waitForSignal
+
+    def poll(self):
+        if self.waitForSignal:
+            return None
+        # end if
+        return self.returncode
+
+    def send_signal(self, signal):
+        if not self.waitForSignal:
+            raise BaseException("unexpected call for send_signal")
+
+    def communicate(self):
+        return (self.stdout, self.stderr)
+
 
 def returnSuccess(cmd, stdout, stderr):
-    return DummyExitProcess("command succeeded", "", 0)
+    return DummyPopen("command succeeded", "", 0, False)
+
 
 def returnFailure(cmd, stdout, stderr):
-    return DummyExitProcess("", "command failed", 1)
+    return DummyPopen("", "command failed", 1, False)
+
 
 def returnException(cmd, stdout, stderr):
     raise BaseException("exception!")
+
+
+def returnSlowSlow(cmd, stdout, stderr):
+    return DummyPopen("", "", None, True)
+
 
 class TestCmd_success(unittest.TestCase):
     def test_runCmdInBackground(self):
@@ -76,6 +98,19 @@ class TestCmd_exception(unittest.TestCase):
         self.assertEqual(resultFromQueue.stderr, None)
         self.assertEqual(resultFromQueue.returncode, None)
         self.assertEqual(resultFromQueue.exception.args[0], "exception!")
+
+    def onFinished(self, result):
+        self.queue.put(result)
+
+class TestCmd_signal(unittest.TestCase):
+    def test_runCmdInBackground(self):
+        self.queue = queue.Queue()
+        adapter.test_modifyRunnerFunc(returnSlowSlow)
+        cmd = ["test", "-meow"]
+        runner = adapter.runCmdInBackground(cmd, self.onFinished)
+        self.assertRaises(BaseException, self.queue.get, block=True, timeout=1)
+        runner.cancel()
+        runner.join()
 
     def onFinished(self, result):
         self.queue.put(result)
