@@ -1,6 +1,6 @@
 # ffmpeg command generation
 
-def makeTweetableVideoFile(steps):
+def makeTweetableVideoFileCommand(steps):
     return [
         "ffmpeg",
         "-i",

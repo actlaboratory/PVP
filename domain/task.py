@@ -30,6 +30,9 @@ class TaskBase:
     def numberOfSteps(self):
         return len(self._steps)
 
+    def copyOfSteps(self):
+        return [s.copy() for s in self._steps]
+
     def nthStep(self, n):
         # convert to 0-based index
         return self._steps[n - 1]

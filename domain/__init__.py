@@ -1,3 +1,4 @@
+from .ffmpegCommand import *
 from .fileTypes import *
 from .presetImage import *
 from .step import *
