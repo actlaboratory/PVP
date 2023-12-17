@@ -7,7 +7,7 @@ import views.ViewCreator
 import views.steps as steps
 from logging import getLogger
 from views.baseDialog import *
-from views.stepConfirmDialog import StepConfirmDialog
+from views.stepConfirmDialog import *
 import constants
 
 
@@ -60,32 +60,38 @@ class StepInputDialog(BaseDialog):
 		if self.currentStage == 0:
 			return
 		# end まだステップが選択されていない
-		panel = self.nthPanel(self.currentStage)
-		step = self.task.nthStep(self.currentStage)
+		prevStage = self.tabCtrl.GetSelection() + 1
+		panel = self.nthPanel(prevStage)
+		step = self.task.nthStep(prevStage)
+		tabChangable = self.tryToSetStepValue(panel, step)
+
+		if not tabChangable:
+			event.Veto()
+
+	def tryToSetStepValue(self, panel, step):
 		val = panel.getValueOrNone()
 		if val is None:
 			step.clearValue()
-			return
+			return True
 		# end 入力されていない or クリア
 		result = step.tryToSetValue(val)
 		if result is True:
-			return
+			return True
 		# end バリデーションOK
 		if result.allowForce is not True:
 			dlg = wx.MessageDialog(self.wnd, "ステップの入力値が不正です。内容を確認して、設定しなおしてください。" + "\n" + result.message, _("エラー"), wx.OK | wx.ICON_ERROR)
 			dlg.ShowModal()
 			dlg.Destroy()
-			event.Veto()
-			return
+			return False
 		# end バリデーションNG
 		# バリデーションNGだが、強制的に設定することが許可されている
 		# 例えば、ファイルの上書きなど
 		dlg = StepConfirmDialog(self.wnd, result.message + "\n" + _("本当にこの設定値で続行しますか？"))
 		if dlg.ShowModal() == wx.ID_YES:
 			step.tryToSetValue(val, force = True)
-			return
+			return True
 		# end 強制
-		event.Veto()
+		return False
 
 	def onTabChanged(self, event):
 		"""タブが変更されたあとの処理。currentStageへの反映"""
@@ -94,10 +100,6 @@ class StepInputDialog(BaseDialog):
 
 	def toNextStage(self):
 		"""次のステージに進む。"""
-		if self.currentStage > self.totalStages:
-			self.Destroy()
-			return
-		# end 終了
 		self.currentStage += 1
 		self.tabCtrl.SetSelection(self.currentStage - 1)
 
@@ -138,10 +140,27 @@ class StepInputDialog(BaseDialog):
 
 	def onNextButtonClick(self, event):
 		if self.currentStage == self.totalStages:
+			self.onCompleteButtonClick(event)
 			return
 		# end 最後のステップ
 		self.toNextStage()
 		self.updateButtonAttributes()
+
+	def onCompleteButtonClick(self, event):
+		panel = self.nthPanel(self.currentStage)
+		step = self.task.nthStep(self.currentStage)
+		ok = self.tryToSetStepValue(panel, step)
+		if not ok:
+			return
+		# end バリデーション
+		taskValidationErrors = self.task.validate()
+		if len(taskValidationErrors) > 0:
+			dlg = wx.MessageDialog(self.wnd, "\n".join(taskValidationErrors), _("エラー"), wx.OK | wx.ICON_ERROR)
+			dlg.ShowModal()
+			dlg.Destroy()
+			return
+		# end タスクバリデーション
+		self.Hide()
 
 	def onBackButtonClick(self, event):
 		if self.currentStage == 1:

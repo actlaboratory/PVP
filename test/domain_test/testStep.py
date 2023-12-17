@@ -7,6 +7,19 @@ class TestStep(unittest.TestCase):
         self.assertEqual(domain.ensureStepTypeSupported("InputSingleAudioFile"), "InputSingleAudioFile")
         self.assertRaises(ValueError, domain.ensureStepTypeSupported, "NonexistentStepType")
 
+    def test_isRequired(self):
+        step = domain.StepBase(True)
+        self.assertTrue(step.isRequired())
+        step = domain.StepBase(False)
+        self.assertFalse(step.isRequired())
+
+    def test_tryToSetValue(self):
+        step = domain.StepBase(True)
+        result = step.tryToSetValue("value")
+        self.assertTrue(result)
+        self.assertEqual(step.getValue(), "value")
+        self.assertTrue(step.isValueSet())
+
 
 class TestInputSingleAudioFileStep(unittest.TestCase):
     def test_validate(self):

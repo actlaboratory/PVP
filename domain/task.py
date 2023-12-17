@@ -22,6 +22,7 @@ class TaskBase:
     _stepDefinitions = []
 
     def __init__(self):
+        self._canceled = False
         self._steps = []
         for s in self._stepDefinitions:
             self._steps.append(s.stepClass(s.isRequired))
@@ -37,6 +38,12 @@ class TaskBase:
         messages = []
         messages.extend(self._ensureRequiredSteps())
         return messages
+
+    def markAsCanceled(self):
+        self._canceled = True
+
+    def isCanceled(self):
+        return self._canceled
 
     def _ensureRequiredSteps(self):
         messages = []
@@ -60,13 +67,11 @@ class TaskBase:
 class MakeTweetableAudioTask(TaskBase):
     _stepDefinitions = [
         defineRequiredStep(InputSingleAudioFileStep),
-        defineOptionalStep(InputPresetImageStep),
-        defineOptionalStep(InputSingleImageFileStep),
+        defineRequiredStep(InputSingleImageFileStep),
         defineRequiredStep(OutputTweetableVideoFileStep),
     ]
 
     def validate(self):
         messages = super().validate()
-        messages.extend(self._ensureOneOf([1, 2]))
         return messages
 

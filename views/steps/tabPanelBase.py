@@ -16,4 +16,4 @@ class TabPanelBase():
 
 	def getValueOrNone(self):
 		"""入力値を取得して返す。入力されていない場合はNoneを返す。"""
-		print("base")
+		raise NotImplementedError("you must implement getValueOrNone method")
