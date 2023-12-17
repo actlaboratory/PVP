@@ -160,6 +160,26 @@ class Events(BaseEvents):
 		if task.isCanceled():
 			return
 		# end キャンセル
-		d = processingDialog.ProcessingDialog()
+		d = processingDialog.ProcessingDialog(task)
 		d.Initialize()
-		d.Show()
+		code = d.Show()
+		if code == wx.ID_OK:
+			self.showFinishDialog(d.getValue())
+		else:
+			self.showCancelDialog()
+		# end if
+		d.Destroy()
+
+	def showFinishDialog(self, result):
+		if result.exception:
+			dialog(_("エラー"), _("コマンドの実行中に予期せぬエラーが発生しました。") + "\n" + str(result.exception))
+			return
+		# end エラー
+		if result.returncode != 0:
+			dialog(_("エラー"), _("コマンドを実行した結果、エラーが返されました。エラーログを開発者に送ってみてください。"))
+			return
+		# end エラー
+		dialog(_("完了"), _("コマンドの実行が完了しました。"))
+
+	def showCancelDialog(self):
+		dialog(_("キャンセル"), _("コマンドの実行をキャンセルしました。"))

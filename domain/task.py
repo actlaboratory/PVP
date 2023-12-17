@@ -19,6 +19,7 @@ def defineOptionalStep(stepClass):
 # Task represents an actual task
 # A task is generated from a task definition
 class TaskBase:
+    identifier = None
     _stepDefinitions = []
 
     def __init__(self):
@@ -29,9 +30,6 @@ class TaskBase:
 
     def numberOfSteps(self):
         return len(self._steps)
-
-    def copyOfSteps(self):
-        return [s.copy() for s in self._steps]
 
     def nthStep(self, n):
         # convert to 0-based index
@@ -68,6 +66,7 @@ class TaskBase:
 
 
 class MakeTweetableAudioTask(TaskBase):
+    identifier = "MakeTweetableAudio"
     _stepDefinitions = [
         defineRequiredStep(InputSingleAudioFileStep),
         defineRequiredStep(InputSingleImageFileStep),

@@ -1,17 +1,30 @@
 # ffmpeg command generation
 
-def makeTweetableVideoFileCommand(steps):
+def ensureTaskIdentifier(identifier, expected):
+    if identifier != expected:
+        raise ValueError("identifier must be %s, got %s" % (expected, identifier))
+
+def makeTweetableAudioCommand(task):
+    ensureTaskIdentifier(task.identifier, "MakeTweetableAudio")
     return [
         "ffmpeg",
         "-i",
-        steps[0].getValue(),
+        task.nthStep(1).getValue(),
         "-i",
-        steps[1].getValue(),
+        task.nthStep(2).getValue(),
         "-loop",
         "1",
         "-vf",
         "\"scale=trunc(iw/2)*2:trunc(ih/2)*2\"",
         "-pix_fmt",
         "yuv420p",
-        steps[2].getValue()
+        task.nthStep(3).getValue()
     ]
+
+
+cmdMap = {
+    "MakeTweetableAudio": makeTweetableAudioCommand
+}
+
+def generateFfmpegCommand(task):
+    return cmdMap[task.identifier](task)

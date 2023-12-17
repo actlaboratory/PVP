@@ -1,4 +1,3 @@
-import copy
 import os
 
 # Editing steps
@@ -39,9 +38,6 @@ class StepBase:
 
     def stepDescription(self):
         raise NotImplementedError("you must implement step description method")
-
-    def copy(self):
-        return copy.deepcopy(self)
 
     def isRequired(self):
         return self._isRequired
