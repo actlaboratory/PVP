@@ -106,7 +106,8 @@ class StepInputDialog(BaseDialog):
 	def toPreviousStage(self):
 		"""前のステージに戻る。"""
 		if self.currentStage == 1:
-			self.Destroy()
+			self.task.markAsCanceled()
+			self.wnd.EndModal(wx.ID_CANCEL)
 			return
 		# end 終了
 		self.currentStage -= 1
@@ -160,7 +161,7 @@ class StepInputDialog(BaseDialog):
 			dlg.Destroy()
 			return
 		# end タスクバリデーション
-		self.Hide()
+		self.wnd.EndModal(wx.ID_OK)
 
 	def onBackButtonClick(self, event):
 		if self.currentStage == 1:

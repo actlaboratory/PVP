@@ -13,7 +13,7 @@ import menuItemsStore
 from .base import *
 from simpleDialog import *
 
-from views import globalKeyConfig, settingsDialog, versionDialog, stepInputDialog
+from views import globalKeyConfig, settingsDialog, versionDialog, stepInputDialog, processingDialog
 
 import domain
 
@@ -155,5 +155,11 @@ class Events(BaseEvents):
 		taskDef = domain.supportedTasks[selected]
 		task = taskDef.generateNewTask()
 		d = stepInputDialog.StepInputDialog(task)
+		d.Initialize()
+		d.Show()
+		if task.isCanceled():
+			return
+		# end キャンセル
+		d = processingDialog.ProcessingDialog()
 		d.Initialize()
 		d.Show()
