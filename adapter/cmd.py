@@ -36,6 +36,7 @@ class CmdRunner(threading.Thread):
             outfile = self.osOperation.open(self._logFilePath, "w")
             popen = self.osOperation.popen(
                 self.cmd,
+                stdin=subprocess.PIPE,
                 stdout=outfile,
                 stderr=outfile,
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
@@ -44,7 +45,10 @@ class CmdRunner(threading.Thread):
                 time.sleep(0.1)
                 if self._cancelled:
                     # Assuming that ffmpeg can be gracefully terminated by sending "q" to stdin
-                    popen.communicate(b"q\n")
+                    # popen.communicate(b'q') does not work
+                    popen.stdin.write(b'q')
+                    popen.stdin.flush()
+                    popen.communicate()
                     break
                 # end if
             # end while

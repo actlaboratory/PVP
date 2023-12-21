@@ -23,7 +23,7 @@ class ProcessingDialog(BaseDialog):
 		super().Initialize(self.app.hMainView.hFrame, _("実行しています..."))
 		self.InstallControls()
 		cmd = domain.generateFfmpegCommand(self.task)
-		self.log.debug("Preparing to run command: %s" % cmd)
+		self.log.debug("Preparing to run command: %s" % " ".join(cmd))
 		now = datetime.datetime.now()
 		self.runner = adapter.runCmdInBackground(cmd, now, onFinished = self.onCommandFinish)
 		self.log.debug("command started in background")
