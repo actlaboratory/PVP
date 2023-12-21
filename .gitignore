@@ -14,4 +14,4 @@ dist/
 pl_auto_save
 runCMD.bat
 *.po~
-logs/
+temp/

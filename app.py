@@ -1,11 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
 #Application Main
 
-import os
 import AppBase
 import update
 import globalVars
 import proxyUtil
+import adapter
+import domain
 
 class Main(AppBase.MainBase):
 	def __init__(self):
@@ -20,8 +21,7 @@ class Main(AppBase.MainBase):
 		if self.config.getboolean("general", "update"):
 			globalVars.update.update(True)
 		# 必要なディレクトリを作成
-		os.makedirs("logs") # TODO: 設定可能にする
-
+		adapter.makeTempdir(domain.tempdirStructure)
 		# メインビューを表示
 		from views import main
 		self.hMainView=main.MainView()

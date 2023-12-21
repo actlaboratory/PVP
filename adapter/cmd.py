@@ -92,7 +92,7 @@ def ensureUniqueLogFilePath(tempDirectory, timestamp, osOperation = OSOperation(
 
 def runCmdInBackground(cmd, timestamp, onFinished = None, osOperation = OSOperation()):
     logFilePath = ensureUniqueLogFilePath(
-        ".", # TODO: make this configurable
+        "temp",
         timestamp,
         osOperation
     )
