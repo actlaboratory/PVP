@@ -1,5 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 
+import datetime
 import wx
 import globalVars
 import views.ViewCreator
@@ -23,7 +24,8 @@ class ProcessingDialog(BaseDialog):
 		self.InstallControls()
 		cmd = domain.generateFfmpegCommand(self.task)
 		self.log.debug("Preparing to run command: %s" % cmd)
-		self.runner = adapter.runCmdInBackground(cmd, self.onCommandFinish)
+		now = datetime.datetime.now()
+		self.runner = adapter.runCmdInBackground(cmd, now, onFinished = self.onCommandFinish)
 		self.log.debug("command started in background")
 		return True
 
@@ -39,10 +41,8 @@ class ProcessingDialog(BaseDialog):
 	def _onCommandFinish(self, result):
 		self.result = result
 		self.log.debug("command finished")
-		self.log.debug("---- stdout ----")
-		self.log.debug(result.stdout)
-		self.log.debug("---- stderr ----")
-		self.log.debug(result.stderr)
+		self.log.debug("---- logFilePath ----")
+		self.log.debug(result.logFilePath)
 		self.log.debug("---- returncode ----")
 		self.log.debug(result.returncode)
 		self.log.debug("---- exception ----")

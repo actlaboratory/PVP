@@ -1,6 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 #Application Main
 
+import os
 import AppBase
 import update
 import globalVars
@@ -18,6 +19,9 @@ class Main(AppBase.MainBase):
 		# アップデートを実行
 		if self.config.getboolean("general", "update"):
 			globalVars.update.update(True)
+		# 必要なディレクトリを作成
+		os.makedirs("logs") # TODO: 設定可能にする
+
 		# メインビューを表示
 		from views import main
 		self.hMainView=main.MainView()
