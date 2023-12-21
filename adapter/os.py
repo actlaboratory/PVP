@@ -10,8 +10,14 @@ class OSOperation:
     def fileExists(self, path):
         return os.path.exists(path)
 
+    def directoryExists(self, path):
+        return os.path.isdir(path)
+
     def open(self, path, mode):
         return open(path, mode)
 
     def popen(self, args, **kwargs):
         return subprocess.Popen(args, **kwargs)
+
+    def mkdir(self, path):
+        return os.mkdir(path)
