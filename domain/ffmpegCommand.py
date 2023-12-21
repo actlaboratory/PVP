@@ -15,7 +15,7 @@ def makeTweetableAudioCommand(task):
         "-loop",
         "1",
         "-vf",
-        "\"scale=trunc(iw/2)*2:trunc(ih/2)*2\"",
+        "scale=trunc(iw/2)*2:trunc(ih/2)*2",
         "-pix_fmt",
         "yuv420p",
         task.nthStep(3).getValue()

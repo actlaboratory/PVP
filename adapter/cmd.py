@@ -1,44 +1,66 @@
+"""
+    This module provides a way to run a command in the background and get notified when it's finished.
+    It assumes that the program ran by this module is ffmpeg.
+    It uses "q" to terminate ffmpeg gracefully.
+    To avoid pipe buffer overflow and deadlock, it receives a log file path and writes ffmpeg's stdout and stderr to the file.
+    The log file is named like "yyyymmdd_hhmmss_1.log" and is stored in the "logs" directory under the current directory.
+    the last number is incremented if the file already exists.
+"""
+
+import datetime
+import os
 import subprocess
 import threading
 import time
+from .os import OSOperation
 
-runnerFunc = subprocess.Popen
 
 class CmdResult:
-    def __init__(self, stdout, stderr, returncode, exception=None):
-        self.stdout = stdout
-        self.stderr = stderr
+    def __init__(self, logFilePath, returncode, exception=None):
+        self.logFilePath = logFilePath
         self.returncode = returncode
         self.exception = exception
 
 class CmdRunner(threading.Thread):
-    def __init__(self, cmd, onFinished = None):
+    def __init__(self, cmd, logFilePath, onFinished = None, osOperation = OSOperation()):
         super().__init__()
+        self.osOperation = osOperation
         self.cmd = cmd
+        self._logFilePath = logFilePath
         self._result = None
         self._onFinished = onFinished
         self._cancelled = False
 
     def run(self):
         try:
-            popen = runnerFunc(self.cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            outfile = self.osOperation.open(self._logFilePath, "w")
+            popen = self.osOperation.popen(
+                self.cmd,
+                stdout=outfile,
+                stderr=outfile,
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
+            )
             while popen.poll() is None:
-                time.sleep(0.05)
+                time.sleep(0.1)
                 if self._cancelled:
-                    popen.send_signal(subprocess.signal.CTRL_C_EVENT)
+                    # Assuming that ffmpeg can be gracefully terminated by sending "q" to stdin
+                    popen.communicate(b"q\n")
                     break
                 # end if
             # end while
-            stdout, stderr = popen.communicate()
-            self._result = CmdResult(stdout, stderr, popen.returncode)
+            outfile.close()
+            self._result = CmdResult(self._logFilePath, popen.returncode)
             if self._onFinished and not self._cancelled:
                 self._onFinished(self.result())
             # end if
         except BaseException as e:
-            self._result = CmdResult(None, None, None, e)
+            self._result = CmdResult(None, None, e)
             if self._onFinished:
                 self._onFinished(self.result())
             # end if
+
+    def logFilePath(self):
+        return self._logFilePath
 
     def result(self):
         return self._result
@@ -47,11 +69,34 @@ class CmdRunner(threading.Thread):
         self._cancelled = True
 
 
-def runCmdInBackground(cmd, onFinished = None):
-    runner = CmdRunner(cmd, onFinished)
+def makeLogFilePath(tempDirectory, timestamp, sequenceNumber):
+    return os.path.join(
+        tempDirectory,
+        "logs",
+        "%s_%d.log" % (
+            timestamp.strftime("%Y%m%d_%H%M%S"),
+            sequenceNumber
+        )
+    )
+
+
+def ensureUniqueLogFilePath(tempDirectory, timestamp, osOperation = OSOperation()):
+    sequenceNumber = 1
+    logFilePath = makeLogFilePath(tempDirectory, timestamp, sequenceNumber)
+    while osOperation.fileExists(logFilePath):
+        sequenceNumber += 1
+        logFilePath = makeLogFilePath(tempDirectory, timestamp, sequenceNumber)
+    # end while
+    return logFilePath
+
+
+def runCmdInBackground(cmd, timestamp, onFinished = None, osOperation = OSOperation()):
+    logFilePath = ensureUniqueLogFilePath(
+        ".", # TODO: make this configurable
+        timestamp,
+        osOperation
+    )
+    runner = CmdRunner(cmd, logFilePath, onFinished, osOperation)
     runner.start()
     return runner
 
-def test_modifyRunnerFunc(newRunnerFunc):
-    global runnerFunc
-    runnerFunc = newRunnerFunc
