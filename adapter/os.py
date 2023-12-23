@@ -5,6 +5,7 @@ I'm wrapping these functions here so that I can mock them in tests.
 
 import os
 import subprocess
+from logging import getLogger
 
 class OSOperation:
     def fileExists(self, path):
@@ -21,3 +22,6 @@ class OSOperation:
 
     def mkdir(self, path):
         return os.mkdir(path)
+
+    def getLogger(self, name):
+        return getLogger(name)

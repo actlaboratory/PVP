@@ -9,10 +9,19 @@
 
 import datetime
 import os
+import queue
 import subprocess
 import threading
 import time
 from .os import OSOperation
+
+
+class Timer:
+    def __init__(self):
+        self.started = datetime.datetime.now()
+
+    def elapsed(self):
+        return (datetime.datetime.now() - self.started).total_seconds()
 
 
 class CmdResult:
@@ -23,7 +32,15 @@ class CmdResult:
         self.exception = exception
 
 class CmdRunner(threading.Thread):
-    def __init__(self, identifier, cmd, logFilePath, onFinished = None, osOperation = OSOperation()):
+    def __init__(
+        self,
+        identifier,
+        cmd,
+        logFilePath,
+        onFinished = None,
+        osOperation = OSOperation(),
+        logger = None
+    ):
         super().__init__()
         self._identifier = identifier
         self.osOperation = osOperation
@@ -32,8 +49,19 @@ class CmdRunner(threading.Thread):
         self._result = None
         self._onFinished = onFinished
         self._cancelled = False
+        self._logger = logger
+
+    def log(self, msg):
+        if self._logger:
+            self._logger.debug(msg)
+        # end if
+
+    def logElapsed(self, timer):
+        self.log("Runner took %.02f seconds" % timer.elapsed())
 
     def run(self):
+        self.log("Preparing to run command: %s" % " ".join(self.cmd))
+        timer = Timer()
         try:
             outfile = self.osOperation.open(self._logFilePath, "w")
             popen = self.osOperation.popen(
@@ -48,6 +76,7 @@ class CmdRunner(threading.Thread):
                 if self._cancelled:
                     # Assuming that ffmpeg can be gracefully terminated by sending "q" to stdin
                     # popen.communicate(b'q') does not work
+                    self.log("Cancelling the command...")
                     popen.stdin.write(b'q')
                     popen.stdin.flush()
                     popen.communicate()
@@ -55,12 +84,17 @@ class CmdRunner(threading.Thread):
                 # end if
             # end while
             outfile.close()
+            self.log("Process exited with code %d" % popen.returncode)
+            self.log("Log file saved to %s" % self._logFilePath)
             self._result = CmdResult(self._identifier, self._logFilePath, popen.returncode)
+            self.logElapsed(timer)
             if self._onFinished and not self._cancelled:
                 self._onFinished(self.result())
             # end if
         except BaseException as e:
+            self.log("Error occurred while running command: %s" % str(e))
             self._result = CmdResult(self._identifier, None, None, e)
+            self.logElapsed(timer)
             if self._onFinished:
                 self._onFinished(self.result())
             # end if
@@ -96,6 +130,37 @@ def ensureUniqueLogFilePath(tempDirectory, timestamp, osOperation = OSOperation(
     return logFilePath
 
 
+def prepareCmdRunner(identifier, cmd, timestamp, onFinished = None, osOperation = OSOperation()):
+    logFilePath = ensureUniqueLogFilePath(
+        "temp",
+        timestamp,
+        osOperation
+    )
+    runner = CmdRunner(identifier, cmd, logFilePath, onFinished, osOperation)
+    return runner
+
+
+def prepareCmdRunners(cmdChain, timestamp, onEachCmdFinished = None, osOperation = OSOperation()):
+    log = osOperation.getLogger("prepareCmdRunners")
+    runners = []
+    for i in range(chain.countCommandSets()):
+        setIndex = i + 1
+        set = chain.nthCommandSet(setIndex)
+        childRunners = []
+        for j in range(set.countCommands()):
+            cmdIndex = j + 1
+            cmd = set.nthCommand(commandIndex)
+            identifier = "step%d.sub%d" % (setIndex, cmdIndex)
+            runner = prepareCmdRunner(identifier, cmd.command, timestamp, onEachCmdFinished, osOperation)
+            childRunners.append(runner)
+            log.debug("Prepared runner: %s" % runner)
+        # end for
+        runners.append(childRunners)
+        log.debug("Prepared %d runners for step %d" % (len(childRunners), setIndex))
+    # end for
+    return runners
+
+
 def runCmdInBackground(identifier, cmd, timestamp, onFinished = None, osOperation = OSOperation()):
     logFilePath = ensureUniqueLogFilePath(
         "temp",
@@ -105,4 +170,33 @@ def runCmdInBackground(identifier, cmd, timestamp, onFinished = None, osOperatio
     runner = CmdRunner(identifier, cmd, logFilePath, onFinished, osOperation)
     runner.start()
     return runner
+
+
+class MultiTaskRunner(threading.Thread):
+    # TODO: does not support concurrent execution yet
+    def __init__(self, runners, onEntireTaskFinished=None):
+        super().__init__()
+        self._onEntireTaskFinished = onEntireTaskFinished
+        self._cancelled = False
+
+    def start(self):
+        for set in self.runners:
+            for runner in set:
+                self.executeCmd(runner)
+                if self._cancelled:
+                    break
+                # end if
+            # end for
+        #end for
+        if self._onEntireTaskFinished:
+            self._onEntireTaskFinished()
+
+    def executeCmd(self, runner):
+        runner.start()
+        while(runner.is_alive()):
+            time.sleep(0.1)
+            if self._cancelled:
+                runner.cancel()
+                break
+            # end if
 
