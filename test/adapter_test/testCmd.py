@@ -18,13 +18,15 @@ class TestCmd_success(unittest.TestCase):
         ope.open.return_value = dummyFile
         ope.popen.return_value = dummyPopen
         cmd = ["test", "-meow"]
-        runner = adapter.runCmdInBackground(cmd, timestamp, self.onFinished, ope)
+        runner = adapter.runCmdInBackground("cat task", cmd, timestamp, self.onFinished, ope)
         runner.join()
         result = runner.result()
+        self.assertEqual(result.identifier, "cat task")
         self.assertEqual(result.logFilePath, "temp\\logs\\20231201_000000_1.log")
         self.assertEqual(result.returncode, 0)
         self.assertEqual(result.exception, None)
         resultFromQueue = self.queue.get(block=True, timeout=1)
+        self.assertEqual(resultFromQueue.identifier, "cat task")
         self.assertEqual(resultFromQueue.logFilePath, "temp\\logs\\20231201_000000_1.log")
         self.assertEqual(resultFromQueue.returncode, 0)
         self.assertEqual(resultFromQueue.exception, None)
@@ -46,13 +48,15 @@ class TestCmd_success_fileExists(unittest.TestCase):
         ope.open.return_value = dummyFile
         ope.popen.return_value = dummyPopen
         cmd = ["test", "-meow"]
-        runner = adapter.runCmdInBackground(cmd, timestamp, self.onFinished, ope)
+        runner = adapter.runCmdInBackground("cat task", cmd, timestamp, self.onFinished, ope)
         runner.join()
         result = runner.result()
+        self.assertEqual(result.identifier, "cat task")
         self.assertEqual(result.logFilePath, "temp\\logs\\20231201_000000_2.log")
         self.assertEqual(result.returncode, 0)
         self.assertEqual(result.exception, None)
         resultFromQueue = self.queue.get(block=True, timeout=1)
+        self.assertEqual(resultFromQueue.identifier, "cat task")
         self.assertEqual(resultFromQueue.logFilePath, "temp\\logs\\20231201_000000_2.log")
         self.assertEqual(resultFromQueue.returncode, 0)
         self.assertEqual(resultFromQueue.exception, None)
@@ -74,13 +78,15 @@ class TestCmd_failure(unittest.TestCase):
         ope.open.return_value = dummyFile
         ope.popen.return_value = dummyPopen
         cmd = ["test", "-meow"]
-        runner = adapter.runCmdInBackground(cmd, timestamp, self.onFinished, ope)
+        runner = adapter.runCmdInBackground("cat task", cmd, timestamp, self.onFinished, ope)
         runner.join()
         result = runner.result()
+        self.assertEqual(result.identifier, "cat task")
         self.assertEqual(result.logFilePath, "temp\\logs\\20231201_000000_1.log")
         self.assertEqual(result.returncode, 1)
         self.assertEqual(result.exception, None)
         resultFromQueue = self.queue.get(block=True, timeout=1)
+        self.assertEqual(resultFromQueue.identifier, "cat task")
         self.assertEqual(resultFromQueue.logFilePath, "temp\\logs\\20231201_000000_1.log")
         self.assertEqual(resultFromQueue.returncode, 1)
         self.assertEqual(resultFromQueue.exception, None)
@@ -102,13 +108,15 @@ class TestCmd_success_exception(unittest.TestCase):
         ope.open.return_value = dummyFile
         ope.popen.side_effect = OSError("test")
         cmd = ["test", "-meow"]
-        runner = adapter.runCmdInBackground(cmd, timestamp, self.onFinished, ope)
+        runner = adapter.runCmdInBackground("cat task", cmd, timestamp, self.onFinished, ope)
         runner.join()
         result = runner.result()
+        self.assertEqual(result.identifier, "cat task")
         self.assertEqual(result.logFilePath, None)
         self.assertEqual(result.returncode, None)
         self.assertIsInstance(result.exception, OSError)
         resultFromQueue = self.queue.get(block=True, timeout=1)
+        self.assertEqual(resultFromQueue.identifier, "cat task")
         self.assertEqual(resultFromQueue.logFilePath, None)
         self.assertEqual(resultFromQueue.returncode, None)
         self.assertIsInstance(resultFromQueue.exception, OSError)
@@ -130,11 +138,12 @@ class TestCmd_cancel(unittest.TestCase):
         ope.open.return_value = dummyFile
         ope.popen.return_value = dummyPopen
         cmd = ["test", "-meow"]
-        runner = adapter.runCmdInBackground(cmd, timestamp, self.onFinished, ope)
+        runner = adapter.runCmdInBackground("cat task", cmd, timestamp, self.onFinished, ope)
         self.assertRaises(queue.Empty, self.queue.get, block=True, timeout=0.5)
         runner.cancel()
         runner.join()
         result = runner.result()
+        self.assertEqual(result.identifier, "cat task")
         self.assertEqual(result.logFilePath, "temp\\logs\\20231201_000000_1.log")
         self.assertEqual(result.returncode, 1)
         self.assertEqual(result.exception, None)

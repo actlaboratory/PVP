@@ -16,14 +16,16 @@ from .os import OSOperation
 
 
 class CmdResult:
-    def __init__(self, logFilePath, returncode, exception=None):
+    def __init__(self, identifier, logFilePath, returncode, exception=None):
+        self.identifier = identifier
         self.logFilePath = logFilePath
         self.returncode = returncode
         self.exception = exception
 
 class CmdRunner(threading.Thread):
-    def __init__(self, cmd, logFilePath, onFinished = None, osOperation = OSOperation()):
+    def __init__(self, identifier, cmd, logFilePath, onFinished = None, osOperation = OSOperation()):
         super().__init__()
+        self._identifier = identifier
         self.osOperation = osOperation
         self.cmd = cmd
         self._logFilePath = logFilePath
@@ -53,12 +55,12 @@ class CmdRunner(threading.Thread):
                 # end if
             # end while
             outfile.close()
-            self._result = CmdResult(self._logFilePath, popen.returncode)
+            self._result = CmdResult(self._identifier, self._logFilePath, popen.returncode)
             if self._onFinished and not self._cancelled:
                 self._onFinished(self.result())
             # end if
         except BaseException as e:
-            self._result = CmdResult(None, None, e)
+            self._result = CmdResult(self._identifier, None, None, e)
             if self._onFinished:
                 self._onFinished(self.result())
             # end if
@@ -94,13 +96,13 @@ def ensureUniqueLogFilePath(tempDirectory, timestamp, osOperation = OSOperation(
     return logFilePath
 
 
-def runCmdInBackground(cmd, timestamp, onFinished = None, osOperation = OSOperation()):
+def runCmdInBackground(identifier, cmd, timestamp, onFinished = None, osOperation = OSOperation()):
     logFilePath = ensureUniqueLogFilePath(
         "temp",
         timestamp,
         osOperation
     )
-    runner = CmdRunner(cmd, logFilePath, onFinished, osOperation)
+    runner = CmdRunner(identifier, cmd, logFilePath, onFinished, osOperation)
     runner.start()
     return runner
 
