@@ -1,5 +1,8 @@
 import os
 
+if '_' not in globals():
+    globals()['_'] = lambda x: x
+
 # Editing steps
 
 supportedStepTypes = [
@@ -70,11 +73,11 @@ class InputSingleAudioFileStep(StepBase):
         return ensureStepTypeSupported("InputSingleAudioFile")
 
     def stepDescription(self):
-        return "入力: 音声ファイルを1つ選択"
+        return _("入力: 音声ファイルを1つ選択")
 
     def validateValue(self, value):
         if not os.path.isfile(value):
-            return InputValidationResult(False, "指定されたファイルがありません。", False)
+            return InputValidationResult(False, _("指定されたファイルがありません。"), False)
         # end exception
         return inputValidationOK()
 
@@ -84,11 +87,11 @@ class InputSingleImageFileStep(StepBase):
         return ensureStepTypeSupported("InputSingleImageFile")
 
     def stepDescription(self):
-        return "入力: 画像ファイルを1つ選択"
+        return _("入力: 画像ファイルを1つ選択")
 
     def validateValue(self, value):
         if not os.path.isfile(value):
-            return InputValidationResult(False, "指定されたファイルがありません。", False)
+            return InputValidationResult(False, _("指定されたファイルがありません。"), False)
         # end exception
         return inputValidationOK()
 
@@ -98,7 +101,7 @@ class OutputTweetableVideoFileStep(StepBase):
         return ensureStepTypeSupported("OutputTweetableVideoFile")
 
     def stepDescription(self):
-        return "出力: Twitter用動画の保存先を指定"
+        return _("出力: Twitter用動画の保存先を指定")
 
     def validateValue(self, value):
         return inputValidationOK()
@@ -108,7 +111,7 @@ class InputPresetImageStep(StepBase):
         return ensureStepTypeSupported("InputPresetImage")
 
     def stepDescription(self):
-        return "入力: プリセットから画像を選択"
+        return _("入力: プリセットから画像を選択")
 
     def validateValue(self, value):
         return inputValidationOK()

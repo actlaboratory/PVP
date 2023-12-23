@@ -1,4 +1,6 @@
 from .task import *
+if '_' not in globals():
+    globals()['_'] = lambda x: x
 
 # TaskDefinition defines a task supported by this software
 class TaskDefinition:
@@ -15,7 +17,7 @@ class TaskDefinition:
 supportedTasks = [
     TaskDefinition(
         MakeTweetableAudioTask,
-        "音声ファイルをTwitter投稿",
-        "音声ファイルからTwitter投稿用の動画ファイルを作成します。",
+        _("音声ファイルをTwitter投稿"),
+        _("音声と画像ファイルからTwitter投稿用の動画ファイルを作成します。"),
     )
 ]

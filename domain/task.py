@@ -1,5 +1,8 @@
 from .step import *
 
+if '_' not in globals():
+    globals()['_'] = lambda x: x
+
 # TaskStepDefinition defines each step in a task
 class TaskStepDefinition:
     def __init__(self, stepClass, isRequired):
@@ -50,7 +53,7 @@ class TaskBase:
         messages = []
         for s in self._steps:
             if s.isRequired() and not s.isValueSet():
-                messages.append("%s のステップが完了していません。" % s.stepDescription())
+                messages.append(_("%s のステップが完了していません。") % s.stepDescription())
             # end if
         # end for
         return messages
@@ -62,7 +65,7 @@ class TaskBase:
             # end if
         # end for
         descriptions = [self._steps[i].stepDescription() for i in stepIndexes]
-        return ["%s のうち、どれか一つを入力してください。" % "、".join(descriptions)]
+        return [_("%s のうち、どれか一つを入力してください。") % "、".join(descriptions)]
 
 
 class MakeTweetableAudioTask(TaskBase):
