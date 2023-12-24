@@ -108,6 +108,9 @@ class CmdRunner(threading.Thread):
     def cancel(self):
         self._cancelled = True
 
+    def identifier(self):
+        return self._identifier
+
 
 def makeLogFilePath(tempDirectory, timestamp, sequenceNumber):
     return os.path.join(
@@ -140,7 +143,7 @@ def prepareCmdRunner(identifier, cmd, timestamp, onFinished = None, osOperation 
     return runner
 
 
-def prepareCmdRunners(cmdChain, timestamp, onEachCmdFinished = None, osOperation = OSOperation()):
+def prepareCmdRunners(chain, timestamp, onEachCmdFinished = None, osOperation = OSOperation()):
     log = osOperation.getLogger("prepareCmdRunners")
     runners = []
     for i in range(chain.countCommandSets()):
@@ -149,7 +152,7 @@ def prepareCmdRunners(cmdChain, timestamp, onEachCmdFinished = None, osOperation
         childRunners = []
         for j in range(set.countCommands()):
             cmdIndex = j + 1
-            cmd = set.nthCommand(commandIndex)
+            cmd = set.nthCommand(cmdIndex)
             identifier = "step%d.sub%d" % (setIndex, cmdIndex)
             runner = prepareCmdRunner(identifier, cmd.command, timestamp, onEachCmdFinished, osOperation)
             childRunners.append(runner)
@@ -174,16 +177,20 @@ def runCmdInBackground(identifier, cmd, timestamp, onFinished = None, osOperatio
 
 class MultiTaskRunner(threading.Thread):
     # TODO: does not support concurrent execution yet
-    def __init__(self, runners, onEntireTaskFinished=None):
+    def __init__(self, runners, onEntireTaskFinished=None, osOperation=OSOperation()):
         super().__init__()
+        self.runners = runners
         self._onEntireTaskFinished = onEntireTaskFinished
         self._cancelled = False
+        self.osOperation = osOperation
+        self.logger = osOperation.getLogger("MultiTaskRunner")
 
-    def start(self):
+    def run(self):
         for set in self.runners:
             for runner in set:
                 self.executeCmd(runner)
                 if self._cancelled:
+                    self.logger.debug("cancelled execution")
                     break
                 # end if
             # end for
@@ -192,6 +199,7 @@ class MultiTaskRunner(threading.Thread):
             self._onEntireTaskFinished()
 
     def executeCmd(self, runner):
+        self.logger.debug("Starting command runner: %s" % runner.identifier())
         runner.start()
         while(runner.is_alive()):
             time.sleep(0.1)
@@ -199,4 +207,11 @@ class MultiTaskRunner(threading.Thread):
                 runner.cancel()
                 break
             # end if
+            runner.join()
 
+
+def runCmdChainInBackground(chain, timestamp, onEachCmdFinished = None, onEntireTaskFinished = None, osOperation = OSOperation()):
+    runners = prepareCmdRunners(chain, timestamp, onEachCmdFinished, osOperation)
+    runner = MultiTaskRunner(runners, onEntireTaskFinished, osOperation)
+    runner.start()
+    return runner

@@ -1,6 +1,6 @@
 # ffmpeg command generation
 
-class commandChain:
+class CommandChain:
     """
     This class represents a chain of commands.
     It contains a list of command sets.
@@ -46,7 +46,7 @@ def ensureTaskIdentifier(identifier, expected):
 
 def makeTweetableAudioCommand(task):
     ensureTaskIdentifier(task.identifier, "MakeTweetableAudio")
-    chain = commandChain()
+    chain = CommandChain()
     command1 = Command(
         [
             "ffmpeg",
