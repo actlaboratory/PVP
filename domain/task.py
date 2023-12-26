@@ -80,3 +80,15 @@ class MakeTweetableAudioTask(TaskBase):
         messages = super().validate()
         return messages
 
+
+class CutVideoTask(TaskBase):
+    identifier = "CutVideo"
+    _stepDefinitions = [
+        defineRequiredStep(InputSingleVideoFileStep),
+        defineRequiredStep(OutputSingleVideoFileStep),
+    ]
+
+    def validate(self):
+        messages = super().validate()
+        return messages
+

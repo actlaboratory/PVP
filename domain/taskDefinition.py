@@ -16,6 +16,11 @@ class TaskDefinition:
 # Defines a list of supported tasks in this software
 supportedTasks = [
     TaskDefinition(
+        CutVideoTask,
+        _("動画のカット編集"),
+        _("シンプルな操作で動画の一部分を切り抜きます"),
+    ),
+    TaskDefinition(
         MakeTweetableAudioTask,
         _("音声ファイルをTwitter投稿"),
         _("音声と画像ファイルからTwitter投稿用の動画ファイルを作成します。"),

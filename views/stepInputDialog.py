@@ -16,6 +16,8 @@ panelMap = {
 	"InputPresetImage": steps.InputPresetImage,
 	"InputSingleImageFile": steps.InputSingleImageFile,
 	"OutputTweetableVideoFile": steps.OutputTweetableVideoFile,
+	"InputSingleVideoFile": steps.InputSingleVideoFile,
+	"OutputSingleVideoFile": steps.OutputSingleVideoFile,
 }
 
 class StepInputDialog(BaseDialog):

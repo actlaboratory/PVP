@@ -10,6 +10,8 @@ supportedStepTypes = [
     "InputSingleImageFile",
     "InputPresetImage",
     "OutputTweetableVideoFile",
+    "InputSingleVideoFile",
+    "OutputSingleVideoFile",
 ]
 
 def ensureStepTypeSupported(stepType):
@@ -112,6 +114,31 @@ class InputPresetImageStep(StepBase):
 
     def stepDescription(self):
         return _("入力: プリセットから画像を選択")
+
+    def validateValue(self, value):
+        return inputValidationOK()
+
+
+class InputSingleVideoFileStep(StepBase):
+    def stepType(self):
+        return ensureStepTypeSupported("InputSingleVideoFile")
+
+    def stepDescription(self):
+        return _("入力: 動画ファイルを1つ選択")
+
+    def validateValue(self, value):
+        if not os.path.isfile(value):
+            return InputValidationResult(False, _("指定されたファイルがありません。"), False)
+        # end exception
+        return inputValidationOK()
+
+
+class OutputSingleVideoFileStep(StepBase):
+    def stepType(self):
+        return ensureStepTypeSupported("OutputSingleVideoFile")
+
+    def stepDescription(self):
+        return _("出力: 動画の保存先を指定")
 
     def validateValue(self, value):
         return inputValidationOK()

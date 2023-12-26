@@ -14,3 +14,13 @@ supportedImageFileTypes = [
     "bmp",
     "gif"
 ]
+
+# supportedVideoFileTypes represents the supported video types for input or output
+supportedVideoFileTypes = [
+    "mp4",
+    "avi",
+    "mov",
+    "wmv",
+    "flv",
+    "mkv",
+]
