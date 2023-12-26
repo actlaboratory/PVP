@@ -14,6 +14,7 @@ import subprocess
 import threading
 import time
 from .os import OSOperation
+import constants
 
 
 class Timer:
@@ -39,7 +40,6 @@ class CmdRunner(threading.Thread):
         logFilePath,
         onFinished = None,
         osOperation = OSOperation(),
-        logger = None
     ):
         super().__init__()
         self._identifier = identifier
@@ -49,7 +49,7 @@ class CmdRunner(threading.Thread):
         self._result = None
         self._onFinished = onFinished
         self._cancelled = False
-        self._logger = logger
+        self._logger = osOperation.getLogger("%s.CmdRunner.%s" % (constants.LOG_PREFIX, identifier))
 
     def log(self, msg):
         if self._logger:
@@ -64,6 +64,7 @@ class CmdRunner(threading.Thread):
         timer = Timer()
         try:
             outfile = self.osOperation.open(self._logFilePath, "w")
+            self.log("Output file opened: %s" % self._logFilePath)
             popen = self.osOperation.popen(
                 self.cmd,
                 stdin=subprocess.PIPE,
@@ -71,6 +72,7 @@ class CmdRunner(threading.Thread):
                 stderr=outfile,
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
             )
+            self.log("Process started: %s" % popen)
             while popen.poll() is None:
                 time.sleep(0.1)
                 if self._cancelled:
@@ -144,7 +146,7 @@ def prepareCmdRunner(identifier, cmd, timestamp, onFinished = None, osOperation 
 
 
 def prepareCmdRunners(chain, timestamp, onEachCmdFinished = None, osOperation = OSOperation()):
-    log = osOperation.getLogger("prepareCmdRunners")
+    log = osOperation.getLogger("%s.prepareCmdRunners" % constants.LOG_PREFIX)
     runners = []
     for i in range(chain.countCommandSets()):
         setIndex = i + 1
@@ -183,9 +185,10 @@ class MultiTaskRunner(threading.Thread):
         self._onEntireTaskFinished = onEntireTaskFinished
         self._cancelled = False
         self.osOperation = osOperation
-        self.logger = osOperation.getLogger("MultiTaskRunner")
+        self.logger = osOperation.getLogger("%s.MultiTaskRunner" % constants.LOG_PREFIX)
 
     def run(self):
+        self.logger.debug("Starting multi-task runner")
         for set in self.runners:
             for runner in set:
                 self.executeCmd(runner)
@@ -208,6 +211,9 @@ class MultiTaskRunner(threading.Thread):
                 break
             # end if
             runner.join()
+
+    def cancel(self):
+        self._cancelled = True
 
 
 def runCmdChainInBackground(chain, timestamp, onEachCmdFinished = None, onEntireTaskFinished = None, osOperation = OSOperation()):

@@ -4,7 +4,6 @@ import datetime
 import wx
 import globalVars
 import views.ViewCreator
-from logging import getLogger
 from views.baseDialog import *
 import constants
 import adapter
@@ -22,10 +21,10 @@ class ProcessingDialog(BaseDialog):
 		self.log.debug("created")
 		super().Initialize(self.app.hMainView.hFrame, _("実行しています..."))
 		self.InstallControls()
-		cmd = domain.generateFfmpegCommand(self.task)
+		chain = domain.generateFfmpegCommand(self.task)
 		now = datetime.datetime.now()
-		self.runner = adapter.runCmdInBackground(cmd, now, onFinished = self.onCommandFinish)
-		self.log.debug("command started in background")
+		self.runner = adapter.runCmdChainInBackground(chain, now, self.onEachCmdFinished, self.onEntireTaskFinished)
+		self.log.debug("command chain started in background: %s" % self.runner)
 		return True
 
 	def InstallControls(self):
@@ -33,13 +32,13 @@ class ProcessingDialog(BaseDialog):
 		self.creator=views.ViewCreator.ViewCreator(self.viewMode, self.panel, self.sizer, wx.VERTICAL, 20, style=wx.EXPAND, margin=20)
 		self.cancelButton = self.creator.cancelbutton(_("中止"), event=self.onCancelButtonClick)
 
-	def onCommandFinish(self, result):
+	def onEachCmdFinished(self, result):
 		# これの実行主体は別スレッドなので、メインスレッドに処理を委譲する
-		wx.CallAfter(self._onCommandFinish, result)
+		wx.CallAfter(self._onEachCmdFinished, result)
 
-	def _onCommandFinish(self, result):
+	def _onEachCmdFinished(self, result):
 		self.result = result
-		self.log.debug("command finished")
+		self.log.debug("command runner %s finished" % (result.identifier))
 		self.log.debug("---- logFilePath ----")
 		self.log.debug(result.logFilePath)
 		self.log.debug("---- returncode ----")
@@ -47,7 +46,12 @@ class ProcessingDialog(BaseDialog):
 		self.log.debug("---- exception ----")
 		self.log.debug(result.exception)
 		self.log.debug("---- end of result ----")
-		self.runner.join()
+
+	def onEntireTaskFinished(self, result = None):
+		wx.CallAfter(self._onEntireTaskFinished, result)
+
+	def _onEntireTaskFinished(self, result = None):
+		self.log.debug("entire task finished")
 		self.wnd.EndModal(wx.ID_OK)
 
 	def getValue(self):
