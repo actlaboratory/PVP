@@ -78,7 +78,7 @@ class CmdRunner(threading.Thread):
                 if self._cancelled:
                     # Assuming that ffmpeg can be gracefully terminated by sending "q" to stdin
                     # popen.communicate(b'q') does not work
-                    self.log("Cancelling the command...")
+                    self.log("Cancelling the command")
                     popen.stdin.write(b'q')
                     popen.stdin.flush()
                     popen.communicate()
@@ -177,6 +177,12 @@ def runCmdInBackground(identifier, cmd, timestamp, onFinished = None, osOperatio
     return runner
 
 
+class ChainResult:
+    def __init__(self, failures, cancelled):
+        self.failures = failures # list of CmdResult
+        self.cancelled = cancelled # bool (true if cancelled)
+
+
 class MultiTaskRunner(threading.Thread):
     # TODO: does not support concurrent execution yet
     def __init__(self, runners, onEntireTaskFinished=None, osOperation=OSOperation()):
@@ -186,6 +192,8 @@ class MultiTaskRunner(threading.Thread):
         self._cancelled = False
         self.osOperation = osOperation
         self.logger = osOperation.getLogger("%s.MultiTaskRunner" % constants.LOG_PREFIX)
+        self._result = None
+        self._failures = []
 
     def run(self):
         self.logger.debug("Starting multi-task runner")
@@ -194,10 +202,15 @@ class MultiTaskRunner(threading.Thread):
                 self.executeCmd(runner)
                 if self._cancelled:
                     self.logger.debug("cancelled execution")
+                    self._result = ChainResult([], True)
                     break
                 # end if
             # end for
         #end for
+        if self._cancelled:
+            return
+        # end if
+        self._result = ChainResult(self._failures, False)
         if self._onEntireTaskFinished:
             self._onEntireTaskFinished()
 
@@ -207,13 +220,22 @@ class MultiTaskRunner(threading.Thread):
         while(runner.is_alive()):
             time.sleep(0.1)
             if self._cancelled:
+                self.logger.debug("cancelling command runner: %s" % runner.identifier())
                 runner.cancel()
                 break
             # end if
-            runner.join()
+        # end while
+        runner.join()
+        result = runner.result()
+        if result.returncode != 0 or result.exception:
+            self._failures.append(result)
 
     def cancel(self):
+        self.logger.debug("attempting to cancel the chain")
         self._cancelled = True
+
+    def result(self):
+        return self._result
 
 
 def runCmdChainInBackground(chain, timestamp, onEachCmdFinished = None, onEntireTaskFinished = None, osOperation = OSOperation()):

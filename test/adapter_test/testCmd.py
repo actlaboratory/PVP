@@ -210,3 +210,74 @@ class TestCmd_runCmdChainInBackground(unittest.TestCase):
 
     def onEntireTaskFinished(self):
         self.entireQueue.put(True)
+
+
+class TestCmd_runCmdChainInBackground_cmdFails(unittest.TestCase):
+    def test_runCmdChainInBackground(self):
+        chain = domain.CommandChain()
+        set1 = domain.CommandSet()
+        command1 = domain.Command(["test", "-meow"])
+        set1.addCommand(command1)
+        chain.addCommandSet(set1)
+        timestamp = datetime.datetime(2023, 12, 1, 0, 0, 0, 0)
+        popen = MagicMock()
+        popen.poll.return_value = 0
+        popen.returncode = 1
+        ope = MagicMock()
+        ope.fileExists.return_value = False
+        ope.getLogger.return_value = MagicMock()
+        ope.popen.return_value = popen
+        ope.open.return_value = MagicMock()
+        runner = adapter.runCmdChainInBackground(chain, timestamp, None, None, ope)
+        runner.join()
+        result = runner.result()
+        self.assertEqual(len(result.failures), 1)
+        self.assertFalse(result.cancelled)
+        cmdResult = result.failures[0]
+        self.assertEqual(cmdResult.returncode, 1)
+
+
+class TestCmd_runCmdChainInBackground_cmdErrors(unittest.TestCase):
+    def test_runCmdChainInBackground(self):
+        chain = domain.CommandChain()
+        set1 = domain.CommandSet()
+        command1 = domain.Command(["test", "-meow"])
+        set1.addCommand(command1)
+        chain.addCommandSet(set1)
+        timestamp = datetime.datetime(2023, 12, 1, 0, 0, 0, 0)
+        ope = MagicMock()
+        ope.fileExists.return_value = False
+        ope.getLogger.return_value = MagicMock()
+        ope.popen.side_effect = OSError("test")
+        ope.open.return_value = MagicMock()
+        runner = adapter.runCmdChainInBackground(chain, timestamp, None, None, ope)
+        runner.join()
+        result = runner.result()
+        self.assertEqual(len(result.failures), 1)
+        self.assertFalse(result.cancelled)
+        cmdResult = result.failures[0]
+        self.assertIsInstance(cmdResult.exception, OSError)
+
+class TestCmd_runCmdChainInBackground_cancel(unittest.TestCase):
+    def test_runCmdChainInBackground(self):
+        chain = domain.CommandChain()
+        set1 = domain.CommandSet()
+        command1 = domain.Command(["test", "-meow"])
+        set1.addCommand(command1)
+        chain.addCommandSet(set1)
+        timestamp = datetime.datetime(2023, 12, 1, 0, 0, 0, 0)
+        popen = MagicMock()
+        popen.poll.return_value = None # never ends
+        popen.returncode = 0
+        ope = MagicMock()
+        ope.fileExists.return_value = False
+        ope.getLogger.return_value = MagicMock()
+        ope.popen.return_value = popen
+        ope.open.return_value = MagicMock()
+        runner = adapter.runCmdChainInBackground(chain, timestamp, None, None, ope)
+        runner.cancel()
+        runner.join()
+        result = runner.result()
+        self.assertEqual(len(result.failures), 0)
+        self.assertTrue(result.cancelled)
+
