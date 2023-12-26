@@ -37,7 +37,6 @@ class ProcessingDialog(BaseDialog):
 		wx.CallAfter(self._onEachCmdFinished, result)
 
 	def _onEachCmdFinished(self, result):
-		self.result = result
 		self.log.debug("command runner %s finished" % (result.identifier))
 		self.log.debug("---- logFilePath ----")
 		self.log.debug(result.logFilePath)
@@ -47,11 +46,12 @@ class ProcessingDialog(BaseDialog):
 		self.log.debug(result.exception)
 		self.log.debug("---- end of result ----")
 
-	def onEntireTaskFinished(self, result = None):
+	def onEntireTaskFinished(self, result):
 		wx.CallAfter(self._onEntireTaskFinished, result)
 
-	def _onEntireTaskFinished(self, result = None):
-		self.log.debug("entire task finished")
+	def _onEntireTaskFinished(self, result):
+		self.log.debug("chain execution finished")
+		self.result = result
 		self.wnd.EndModal(wx.ID_OK)
 
 	def getValue(self):

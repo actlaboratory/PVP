@@ -208,11 +208,14 @@ class MultiTaskRunner(threading.Thread):
             # end for
         #end for
         if self._cancelled:
+            self.logger.debug("cancelled and exiting")
             return
         # end if
         self._result = ChainResult(self._failures, False)
         if self._onEntireTaskFinished:
-            self._onEntireTaskFinished()
+            self._onEntireTaskFinished(self._result)
+        # end if
+        self.logger.debug("successfully executed the chain, exiting")
 
     def executeCmd(self, runner):
         self.logger.debug("Starting command runner: %s" % runner.identifier())

@@ -171,15 +171,20 @@ class Events(BaseEvents):
 		d.Destroy()
 
 	def showFinishDialog(self, result):
-		if result.exception:
+		if len(result.failures) == 0:
+			dialog(_("完了"), _("コマンドの実行が完了しました。"))
+			return
+		# end 成功
+		# TODO: とりあえず1つだけ表示している
+		lastResult = result.failures[0]
+		if lastResult.exception:
 			dialog(_("エラー"), _("コマンドの実行中に予期せぬエラーが発生しました。") + "\n" + str(result.exception))
 			return
 		# end エラー
-		if result.returncode != 0:
+		if lastResult.returncode != 0:
 			dialog(_("エラー"), _("コマンドを実行した結果、エラーが返されました。エラーログを開発者に送ってみてください。"))
 			return
 		# end エラー
-		dialog(_("完了"), _("コマンドの実行が完了しました。"))
 
 	def showCancelDialog(self):
 		dialog(_("キャンセル"), _("コマンドの実行をキャンセルしました。"))
