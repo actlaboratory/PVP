@@ -208,8 +208,8 @@ class TestCmd_runCmdChainInBackground(unittest.TestCase):
     def onEachCmdFinished(self, result):
         self.eachQueue.put(result)
 
-    def onEntireTaskFinished(self):
-        self.entireQueue.put(True)
+    def onEntireTaskFinished(self, result):
+        self.entireQueue.put(result)
 
 
 class TestCmd_runCmdChainInBackground_cmdFails(unittest.TestCase):
