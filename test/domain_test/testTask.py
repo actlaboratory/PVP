@@ -1,3 +1,4 @@
+import os
 import unittest
 import domain
 
@@ -57,3 +58,19 @@ class TestCutVideoTask(unittest.TestCase):
         task = domain.CutVideoTask()
         task.nthStep(1)._value = "test.mp4" # force
         self.assertEqual(task.getInputFileName(), "test.mp4")
+
+    def test_getPrerequisite(self):
+        task = domain.CutVideoTask()
+        task.nthStep(1)._value = "test.mp4"
+        marker = domain.CutMarker(
+            startPoint=domain.TimePoint(
+                hour=0, minute=0, second=10, millisecond=0
+            ),
+            endPoint=domain.TimePoint(
+                hour=0, minute=0, second=20, millisecond=0
+            )
+        )
+        task.nthStep(2)._value = [marker]
+        prereq = task.getPrerequisites()
+        self.assertEqual(len(prereq), 1)
+        self.assertEqual(prereq[0].path, os.path.join(os.getcwd(), "temp\\concats\\test_parts.txt"))

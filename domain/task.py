@@ -1,4 +1,7 @@
+import os
 from .step import *
+from .prerequisite import *
+from .tempdir import *
 
 if '_' not in globals():
     globals()['_'] = lambda x: x
@@ -73,6 +76,8 @@ class TaskBase:
     def getOutputFileName(self):
         return None
 
+    def getPrerequisites(self):
+        return [] # override this method if the task has prerequisites
 
 class MakeTweetableAudioTask(TaskBase):
     identifier = "MakeTweetableAudio"
@@ -101,3 +106,20 @@ class CutVideoTask(TaskBase):
 
     def getInputFileName(self):
         return self.nthStep(1).getValue()
+
+    def getPrerequisites(self):
+        cutMarkers = self.nthStep(2).getValue()
+        inputDir = os.path.dirname(self.getInputFileName())
+        inputFileName = os.path.basename(self.getInputFileName()).split(".")[0]
+        inputExtention = os.path.basename(self.getInputFileName()).split(".")[1]
+        # If there is a single cut marker, we must cut the input file into two parts: before the marker start and after the marker end.
+        # As another cut point is added, we must cut the input file into three parts: before the first marker, between the first and second markers, and after the second marker.
+        # So, the number should be cutMarkers + 1.
+        numFiles = len(cutMarkers) + 1
+        content = []
+        for i in range(numFiles):
+            fn = os.path.join(inputDir, "%s_part%d.%s" % (inputFileName, i+1, inputExtention))
+            content.append(fn)
+        # end for
+        prerequisite = FilePrerequisite(os.path.join(tempdirRoot(), "concats", "%s_parts.txt" % inputFileName), "\n".join(content))
+        return [prerequisite]
