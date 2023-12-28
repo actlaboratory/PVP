@@ -40,3 +40,20 @@ class TestMakeTweetableAudioTask(unittest.TestCase):
         self.assertFalse(task.isCanceled())
         task.markAsCanceled()
         self.assertTrue(task.isCanceled())
+
+
+class TestCutVideoTask(unittest.TestCase):
+    def test_construct(self):
+        task = domain.CutVideoTask()
+        self.assertEqual(len(task._steps), 3)
+        self.assertEqual(task._steps[0].stepType(), "InputSingleVideoFile")
+        self.assertTrue(task._steps[0].isRequired())
+        self.assertEqual(task._steps[1].stepType(), "ShowVideoEditor")
+        self.assertTrue(task._steps[1].isRequired())
+        self.assertEqual(task._steps[2].stepType(), "OutputSingleVideoFile")
+        self.assertTrue(task._steps[2].isRequired())
+
+    def test_getInputFileName(self):
+        task = domain.CutVideoTask()
+        task.nthStep(1)._value = "test.mp4" # force
+        self.assertEqual(task.getInputFileName(), "test.mp4")

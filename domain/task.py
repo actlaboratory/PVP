@@ -67,6 +67,12 @@ class TaskBase:
         descriptions = [self._steps[i].stepDescription() for i in stepIndexes]
         return [_("%s のうち、どれか一つを入力してください。") % "、".join(descriptions)]
 
+    def getInputFileName(self):
+        return None # override this method to return input file name
+
+    def getOutputFileName(self):
+        return None
+
 
 class MakeTweetableAudioTask(TaskBase):
     identifier = "MakeTweetableAudio"
@@ -85,6 +91,7 @@ class CutVideoTask(TaskBase):
     identifier = "CutVideo"
     _stepDefinitions = [
         defineRequiredStep(InputSingleVideoFileStep),
+        defineRequiredStep(ShowVideoEditorStep),
         defineRequiredStep(OutputSingleVideoFileStep),
     ]
 
@@ -92,3 +99,5 @@ class CutVideoTask(TaskBase):
         messages = super().validate()
         return messages
 
+    def getInputFileName(self):
+        return self.nthStep(1).getValue()

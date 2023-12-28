@@ -12,6 +12,7 @@ supportedStepTypes = [
     "OutputTweetableVideoFile",
     "InputSingleVideoFile",
     "OutputSingleVideoFile",
+    "ShowVideoEditor",
 ]
 
 def ensureStepTypeSupported(stepType):
@@ -139,6 +140,17 @@ class OutputSingleVideoFileStep(StepBase):
 
     def stepDescription(self):
         return _("出力: 動画の保存先を指定")
+
+    def validateValue(self, value):
+        return inputValidationOK()
+
+
+class ShowVideoEditorStep(StepBase):
+    def stepType(self):
+        return ensureStepTypeSupported("ShowVideoEditor")
+
+    def stepDescription(self):
+        return _("出力: カット範囲を指定")
 
     def validateValue(self, value):
         return inputValidationOK()
