@@ -4,3 +4,4 @@ from .inputSingleImageFile import *
 from .outputTweetableVideoFile import *
 from .inputSingleVideoFile import *
 from .outputSingleVideoFile import *
+from .showVideoEditor import *

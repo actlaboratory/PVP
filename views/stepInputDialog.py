@@ -18,6 +18,7 @@ panelMap = {
 	"OutputTweetableVideoFile": steps.OutputTweetableVideoFile,
 	"InputSingleVideoFile": steps.InputSingleVideoFile,
 	"OutputSingleVideoFile": steps.OutputSingleVideoFile,
+	"ShowVideoEditor": steps.ShowVideoEditor,
 }
 
 class StepInputDialog(BaseDialog):
