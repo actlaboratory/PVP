@@ -128,7 +128,7 @@ class StepInputDialog(BaseDialog):
 		name = "%d/%d %s (%s)" % (stage, self.totalStages, step.stepDescription(), requirement)
 		vc = views.ViewCreator.ViewCreator(self.viewMode, self.tabCtrl, None, wx.VERTICAL, 20, name, style=wx.EXPAND|wx.ALL, proportion=1)
 		panelClass = panelMap[step.stepType()]
-		panel = panelClass(vc, step, stage, self.totalStages)
+		panel = panelClass(vc, self.task, step, stage, self.totalStages)
 		self.stepPanels.append(panel)
 
 	def updateButtonAttributes(self):
