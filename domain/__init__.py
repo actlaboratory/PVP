@@ -1,4 +1,5 @@
 from .cutMarker import *
+from .duration import *
 from .ffmpegCommand import *
 from .fileTypes import *
 from .presetImage import *

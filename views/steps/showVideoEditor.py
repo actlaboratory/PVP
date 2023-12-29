@@ -2,33 +2,8 @@ import wx
 import wx.media
 import domain
 from .tabPanelBase import *
+from .durationInput import DurationInputDialog
 
-
-class SeekInterval:
-	def __init__(self, secondOrPercent, value):
-		if secondOrPercent not in ["second", "percent"]:
-			raise ValueError("secondOrPercent must be 'second' or 'percent'")
-		# end if
-		self.secondOrPercent = secondOrPercent
-		self.value = value
-
-	def __str__(self):
-		if self.secondOrPercent == "second":
-			return self._strSecond()
-		else:
-			return str(self.value) + _("パーセント")
-
-	def _strSecond(self):
-		if self.value % 60 == 0:
-			return str(self.value // 60) + _("分")
-		else:
-			return str(self.value) + _("秒")
-
-	def calcPosition(self, length):
-		if self.secondOrPercent == "second":
-			return self.value * 1000
-		else:
-			return length * self.value // 100
 
 class ShowVideoEditor(TabPanelBase):
 	def InstallControls(self):
@@ -53,17 +28,17 @@ class ShowVideoEditor(TabPanelBase):
 
 	def installIntervalMenu(self):
 		self.intervalMenuMap = {
-			1001: SeekInterval("second", 3),
-			1002: SeekInterval("second", 5),
-			1003: SeekInterval("second", 10),
-			1004: SeekInterval("second", 30),
-			1005: SeekInterval("second", 60),
-			1006: SeekInterval("second", 180),
-			1007: SeekInterval("second", 300),
-			1008: SeekInterval("second", 600),
-			1009: SeekInterval("percent", 1),
-			1010: SeekInterval("percent", 5),
-			1011: SeekInterval("percent", 10),
+			1001: domain.SeekInterval("second", 3),
+			1002: domain.SeekInterval("second", 5),
+			1003: domain.SeekInterval("second", 10),
+			1004: domain.SeekInterval("second", 30),
+			1005: domain.SeekInterval("second", 60),
+			1006: domain.SeekInterval("second", 180),
+			1007: domain.SeekInterval("second", 300),
+			1008: domain.SeekInterval("second", 600),
+			1009: domain.SeekInterval("percent", 1),
+			1010: domain.SeekInterval("percent", 5),
+			1011: domain.SeekInterval("percent", 10),
 		}
 		menu = wx.Menu()
 		self.item1 = menu.Append(1001, _("3秒"))
@@ -139,3 +114,4 @@ class ShowVideoEditor(TabPanelBase):
 		length = self.mediaCtrl.Length()
 		newpos = self._seekInterval.calcPosition(length)
 		self.mediaCtrl.Seek(newpos, wx.FromCurrent)
+
