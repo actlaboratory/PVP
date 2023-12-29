@@ -21,7 +21,7 @@ class ShowVideoEditor(TabPanelBase):
 		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval}, self.onForwardButtonClick)
 		self.changeIntervalButton = buttonsArea.button(_("間隔調整: %(interval)s") % {"interval": self._seekInterval}, self.onChangeIntervalPopup)
 		self.gotoButton = buttonsArea.button(_("指定時間へ"), self.onGotoButtonClick)
-		self.cutTriggerButton = buttonsArea.button(_("ここからカット"))
+		self.cutTriggerButton = buttonsArea.button(_("ここからカット"), self.onCutTriggerButtonClick)
 		listArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 		self.markersListCtrl, unused = listArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(200, 300))
 		self.updateButtons()
@@ -95,6 +95,10 @@ class ShowVideoEditor(TabPanelBase):
 			self.playButton.SetLabel(_("停止"))
 		else:
 			self.playButton.SetLabel(_("再生"))
+		if self._lastStartPoint is None:
+			self.cutTriggerButton.SetLabel(_("ここからカット"))
+		else:
+			self.cutTriggerButton.SetLabel(_("ここまでカット"))
 
 	def onMediaStateChange(self, event):
 		self.updateButtons()
@@ -125,3 +129,28 @@ class ShowVideoEditor(TabPanelBase):
 		# end cancel
 		newpos = domain.positionStrToMilliseconds(domain.normalizeToFullPositionStr(dlg.GetData()))
 		self.mediaCtrl.Seek(newpos, wx.FromStart)
+
+	def onCutTriggerButtonClick(self, event):
+		if self._lastStartPoint is not None:
+			self._lastEndPoint = self.mediaCtrl.Tell()
+			self.swapPointsIfNeeded()
+			self._cutMarkerList.append(domain.CutMarker(domain.millisecondsToPositionStr(self._lastStartPoint), domain.millisecondsToPositionStr(self._lastEndPoint)))
+			self._lastStartPoint = None
+			self._lastEndPoint = None
+			self.updateMarkersList()
+			self.updateButtons()
+			return
+		# end カット終了点
+		self._lastStartPoint = self.mediaCtrl.Tell()
+		self.updateButtons()
+
+	def swapPointsIfNeeded(self):
+		if self._lastStartPoint > self._lastEndPoint:
+			tmp = self._lastStartPoint
+			self._lastStartPoint = self._lastEndPoint
+			self._lastEndPoint = tmp
+
+	def updateMarkersList(self):
+		self.markersListCtrl.Clear()
+		for m in self._cutMarkerList:
+			self.markersListCtrl.Append(_("%s から %s まで") % (m.startPoint, m.endPoint))
