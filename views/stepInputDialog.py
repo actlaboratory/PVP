@@ -63,13 +63,14 @@ class StepInputDialog(BaseDialog):
 		if self.currentStage == 0:
 			return
 		# end まだステップが選択されていない
-		prevStage = self.tabCtrl.GetSelection() + 1
+		prevStage = self.tabCtrl.GetSelection() + 1 # nth に渡すので1オリジンにする
 		panel = self.nthPanel(prevStage)
 		step = self.task.nthStep(prevStage)
 		tabChangable = self.tryToSetStepValue(panel, step)
-
 		if not tabChangable:
 			event.Veto()
+		# end バリデーション
+		panel.onDeactivated()
 
 	def tryToSetStepValue(self, panel, step):
 		val = panel.getValueOrNone()
@@ -100,6 +101,8 @@ class StepInputDialog(BaseDialog):
 		"""タブが変更されたあとの処理。currentStageへの反映"""
 		self.currentStage = event.GetSelection() + 1
 		self.updateButtonAttributes()
+		panel = self.nthPanel(self.currentStage)
+		panel.onActivated()
 
 	def toNextStage(self):
 		"""次のステージに進む。"""
