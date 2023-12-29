@@ -63,12 +63,8 @@ class TestCutVideoTask(unittest.TestCase):
         task = domain.CutVideoTask()
         task.nthStep(1)._value = "test.mp4"
         marker = domain.CutMarker(
-            startPoint=domain.TimePoint(
-                hour=0, minute=0, second=10, millisecond=0
-            ),
-            endPoint=domain.TimePoint(
-                hour=0, minute=0, second=20, millisecond=0
-            )
+            startPoint=10000,
+            endPoint=20000,
         )
         task.nthStep(2)._value = [marker]
         prereq = task.getPrerequisites()

@@ -1,5 +1,9 @@
 # ffmpeg command generation
 
+import os
+from .duration import *
+from .tempdir import *
+
 class CommandChain:
     """
     This class represents a chain of commands.
@@ -67,6 +71,69 @@ def makeTweetableAudioCommand(task):
     set.addCommand(command1)
     chain.addCommandSet(set)
     return chain
+
+
+def CutVideoCommand(task):
+    ensureTaskIdentifier(task.identifier, "CutVideo")
+    cutMarkers = task.nthStep(2).getValue()
+    if len(cutMarkers) == 0:
+        raise ValueError("cutMarkers must not be empty")
+    # end if
+    cuts = []
+    cuts.append((0, cutMarkers[0].startPoint))
+    for i in range(len(cutMarkers) - 1):
+        cuts.append((cutMarkers[i].endPoint, cutMarkers[i + 1].startPoint))
+    # end for
+    cuts.append((cutMarkers[-1].endPoint, None))
+    chain = CommandChain()
+    concatSet = CommandSet()
+    inputFile = task.nthStep(1).getValue()
+    for cut in cuts:
+        cmd = makeCutCommand(inputFile, cut[0], cut[1])
+        concatSet.addCommand(cmd)
+    # end for
+    chain.addCommandSet(concatSet)
+    withoutExtension = os.path.basename(inputFile).split(".")[0]
+    joinSet = CommandSet()
+    joinSet.addCommand(
+        Command(
+            [
+                "ffmpeg",
+                "-f",
+                "concat",
+                "-safe",
+                "0",
+                "-i",
+                os.path.join(tempdirRoot(), "concats", "%s_parts.txt" % withoutExtension),
+                "-c",
+                "copy",
+                task.nthStep(3).getValue()
+            ]
+        )
+    )
+    chain.addCommandSet(joinSet)
+    return chain
+
+def makeCutCommand(input, start, end):
+    root = tempdirRoot()
+    cmd = [
+        "ffmpeg",
+        "-i",
+        input,
+        "-ss",
+        millisecondsToPositionStr(start),
+    ]
+    if end is not None:
+        cmd.extend(["-to", millisecondsToPositionStr(end)])
+    # end if
+    withoutExtension = os.path.basename(input).split(".")[0]
+    extension = os.path.basename(input).split(".")[1]
+    cmd.extend([
+        "-c",
+        "copy",
+        os.path.join(root, "concats", "%s_part%d.%s" % (withoutExtension, i+1, extension))
+    ])
+    return Command(cmd)
 
 
 cmdMap = {
