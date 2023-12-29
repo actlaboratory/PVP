@@ -24,6 +24,11 @@ class SeekInterval:
 		else:
 			return str(self.value) + _("秒")
 
+	def calcPosition(self, length):
+		if self.secondOrPercent == "second":
+			return self.value * 1000
+		else:
+			return length * self.value // 100
 
 class ShowVideoEditor(TabPanelBase):
 	def InstallControls(self):
@@ -37,8 +42,8 @@ class ShowVideoEditor(TabPanelBase):
 		self.mediaCtrl.Bind(wx.media.EVT_MEDIA_STATECHANGED, self.onMediaStateChange)
 		buttonsArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 		self.playButton = buttonsArea.button(_("再生"), self.onPlayButtonClick)
-		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval})
-		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval})
+		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval}, self.onBackwardButtonClick)
+		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval}, self.onForwardButtonClick)
 		self.changeIntervalButton = buttonsArea.button(_("間隔調整: %(interval)s") % {"interval": self._seekInterval}, self.onChangeIntervalPopup)
 		self.gotoButton = buttonsArea.button(_("指定時間へ"))
 		self.cutTriggerButton = buttonsArea.button(_("ここからカット"))
@@ -124,3 +129,13 @@ class ShowVideoEditor(TabPanelBase):
 			self.mediaCtrl.Pause()
 		else:
 			self.mediaCtrl.Play()
+
+	def onBackwardButtonClick(self, event):
+		length = self.mediaCtrl.Length()
+		newpos = self._seekInterval.calcPosition(length) * -1
+		self.mediaCtrl.Seek(newpos, wx.FromCurrent)
+
+	def onForwardButtonClick(self, event):
+		length = self.mediaCtrl.Length()
+		newpos = self._seekInterval.calcPosition(length)
+		self.mediaCtrl.Seek(newpos, wx.FromCurrent)
