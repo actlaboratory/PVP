@@ -24,6 +24,9 @@ class ShowVideoEditor(TabPanelBase):
 		self.cutTriggerButton = buttonsArea.button(_("ここからカット"), self.onCutTriggerButtonClick)
 		listArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 		self.markersListCtrl, unused = listArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(200, 300))
+		self.installContextMenu()
+		self.markersListCtrl.Bind(wx.EVT_CONTEXT_MENU, self.onContextMenu)
+		self.markersListCtrl.Bind(wx.EVT_KEY_UP, self.onMarkersListKeyUp)
 		self.updateButtons()
 
 	def installIntervalMenu(self):
@@ -54,6 +57,12 @@ class ShowVideoEditor(TabPanelBase):
 		menu.Append(1011, _("10%"))
 		menu.Bind(wx.EVT_MENU, self.onChangeInterval)
 		self.intervalMenu = menu
+
+	def installContextMenu(self):
+		contextMenu = wx.Menu()
+		contextMenu.Append(1101, _("削除"))
+		contextMenu.Bind(wx.EVT_MENU, self.onContextMenuSelect)
+		self.contextMenu = contextMenu
 
 	def getValueOrNone(self):
 		"""入力値: domain.CutMarker のリスト or None"""
@@ -151,6 +160,29 @@ class ShowVideoEditor(TabPanelBase):
 			self._lastEndPoint = tmp
 
 	def updateMarkersList(self):
+		prevIndex = self.markersListCtrl.GetSelection()
 		self.markersListCtrl.Clear()
 		for m in self._cutMarkerList:
 			self.markersListCtrl.Append(_("%s から %s まで") % (m.startPoint, m.endPoint))
+		# end for
+		if prevIndex >= 0 and prevIndex < self.markersListCtrl.GetCount():
+			self.markersListCtrl.SetSelection(prevIndex)
+
+	def onContextMenu(self, event):
+		self.hPanel.PopupMenu(self.contextMenu, event.GetPosition())
+
+	def onContextMenuSelect(self, event):
+		if event.GetId() == 1101:
+			self.deleteMarker()
+
+	def deleteMarker(self):
+		index = self.markersListCtrl.GetSelection()
+		if index == wx.NOT_FOUND:
+			return
+		# end 選択されていない
+		self._cutMarkerList.pop(index)
+		self.updateMarkersList()
+
+	def onMarkersListKeyUp(self, event):
+		if event.GetKeyCode() == wx.WXK_DELETE:
+			self.deleteMarker()
