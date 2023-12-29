@@ -8,7 +8,7 @@ from .durationInput import DurationInputDialog
 class ShowVideoEditor(TabPanelBase):
 	def InstallControls(self):
 		self._cutMarkerList = []
-		self._seekInterval = SeekInterval("percent", 1)
+		self._seekInterval = domain.SeekInterval("percent", 1)
 		self._lastStartPoint = None
 		self._lastEndPoint = None
 		self._lastLoadedFile = None
@@ -20,7 +20,7 @@ class ShowVideoEditor(TabPanelBase):
 		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval}, self.onBackwardButtonClick)
 		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval}, self.onForwardButtonClick)
 		self.changeIntervalButton = buttonsArea.button(_("間隔調整: %(interval)s") % {"interval": self._seekInterval}, self.onChangeIntervalPopup)
-		self.gotoButton = buttonsArea.button(_("指定時間へ"))
+		self.gotoButton = buttonsArea.button(_("指定時間へ"), self.onGotoButtonClick)
 		self.cutTriggerButton = buttonsArea.button(_("ここからカット"))
 		listArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 		self.markersListCtrl, unused = listArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(200, 300))
@@ -115,3 +115,13 @@ class ShowVideoEditor(TabPanelBase):
 		newpos = self._seekInterval.calcPosition(length)
 		self.mediaCtrl.Seek(newpos, wx.FromCurrent)
 
+	def onGotoButtonClick(self, event):
+		curpos = domain.millisecondsToPositionStr(self.mediaCtrl.Tell())
+		dlg = DurationInputDialog(self.hPanel, curpos)
+		dlg.Initialize()
+		ret = dlg.Show()
+		if ret == wx.ID_CANCEL:
+			return
+		# end cancel
+		newpos = domain.positionStrToMilliseconds(domain.normalizeToFullPositionStr(dlg.GetData()))
+		self.mediaCtrl.Seek(newpos, wx.FromStart)

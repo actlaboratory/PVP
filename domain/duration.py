@@ -49,3 +49,18 @@ def positionStrToMilliseconds(positionStr):
     second = int(match.group(3))
     millisecond = int(match.group(4))
     return (hour * 60 * 60 + minute * 60 + second) * 1000 + millisecond
+
+def normalizeToFullPositionStr(positionStr):
+    m1 = re.match(r"^(\d+)$", positionStr)
+    if m1 is not None:
+        return millisecondsToPositionStr(int(m1.group(1)) * 1000 * 60)
+    # end if
+    m2 = re.match(r"^(\d+):(\d+)$", positionStr)
+    if m2 is not None:
+        return millisecondsToPositionStr(int(m2.group(1)) * 1000 * 60 + int(m2.group(2)) * 1000)
+    # end if
+    m3 = re.match(r"^(\d+):(\d+):(\d+)$", positionStr)
+    if m3 is not None:
+        return millisecondsToPositionStr(int(m3.group(1)) * 1000 * 60 * 60 + int(m3.group(2)) * 1000 * 60 + int(m3.group(3)) * 1000)
+    # end if
+    return positionStr

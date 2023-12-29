@@ -40,3 +40,15 @@ class TestPositionStr(unittest.TestCase):
         self.assertEqual(domain.positionStrToMilliseconds("00:01:01.000"), 61000)
         self.assertEqual(domain.positionStrToMilliseconds("01:00:00.000"), 3600000)
         self.assertEqual(domain.positionStrToMilliseconds("01:01:01.000"), 3661000)
+
+    def test_normalizeToFullPositionStr(self):
+        self.assertEqual(domain.normalizeToFullPositionStr("0"), "00:00:00.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("1"), "00:01:00.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:00:00"), "00:00:00.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:00:01"), "00:00:01.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:00:10"), "00:00:10.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:01:00"), "00:01:00.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:01:01"), "00:01:01.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("01:00:00"), "01:00:00.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("01:01:01"), "01:01:01.000")
+        self.assertEqual(domain.normalizeToFullPositionStr("00:00:00.000"), "00:00:00.000")
