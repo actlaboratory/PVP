@@ -25,7 +25,7 @@ class ShowVideoEditor(TabPanelBase):
 		self._seekInterval = SeekInterval("percent", 1)
 		self._lastStartPoint = None
 		self._lastEndPoint = None
-		self.mediaCtrl = wx.media.MediaCtrl(self.hPanel, style=wx.media.MC_NO_AUTORESIZE, name=_("メディアコントロール"))
+		self.mediaCtrl = wx.media.MediaCtrl(self.hPanel, name=_("メディアコントロール"))
 		buttonsArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 		self.playButton = buttonsArea.button(_("再生"))
 		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval})
