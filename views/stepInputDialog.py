@@ -48,7 +48,7 @@ class StepInputDialog(BaseDialog):
 		self.back = pageSelectButtonArea.button(_("前のステップ"), event=self.onBackButtonClick)
 
 		bottomButtonArea = views.ViewCreator.ViewCreator(self.viewMode, self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALIGN_RIGHT, margin=20)
-		self.abort = bottomButtonArea.cancelbutton(_("中止"))
+		self.abort = bottomButtonArea.cancelbutton(_("中止"), event=self.onAbortButtonClick)
 
 		self.setupTabs()
 		self.toNextStage()
@@ -113,6 +113,7 @@ class StepInputDialog(BaseDialog):
 		"""前のステージに戻る。"""
 		if self.currentStage == 1:
 			self.task.markAsCanceled()
+			print("marked as cancelled")
 			self.wnd.EndModal(wx.ID_CANCEL)
 			return
 		# end 終了
@@ -175,6 +176,10 @@ class StepInputDialog(BaseDialog):
 		# end 最初のステップ
 		self.toPreviousStage()
 		self.updateButtonAttributes()
+
+	def onAbortButtonClick(self, event):
+		self.task.markAsCanceled()
+		self.wnd.EndModal(wx.ID_CANCEL)
 
 	def Destroy(self, events = None):
 		self.log.debug("destroy")
