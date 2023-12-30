@@ -14,7 +14,6 @@ def makeTempdir(structure, prevDirs=[], osOperation=OSOperation()):
         if not osOperation.directoryExists(path):
             osOperation.mkdir(path)
         # end make dir
-        prevDirs.append(k)
-        makeTempdir(v, prevDirs, osOperation)
+        makeTempdir(v, prevDirs + [k], osOperation)
     # end for
 # end makeTempdir

@@ -15,6 +15,7 @@ from simpleDialog import *
 
 from views import globalKeyConfig, settingsDialog, versionDialog, stepInputDialog, processingDialog
 
+import adapter
 import domain
 
 class MainView(BaseView):
@@ -160,6 +161,11 @@ class Events(BaseEvents):
 		if task.isCanceled():
 			return
 		# end キャンセル
+		prereq = task.getPrerequisites()
+		for p in prereq:
+			# 今はFilePrerequisiteしかない
+			adapter.createFilePrerequisite(p)
+		# end for
 		d = processingDialog.ProcessingDialog(task)
 		d.Initialize()
 		code = d.Show()

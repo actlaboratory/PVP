@@ -118,8 +118,9 @@ class CutVideoTask(TaskBase):
         numFiles = len(cutMarkers) + 1
         content = []
         for i in range(numFiles):
-            fn = os.path.join(inputDir, "%s_part%d.%s" % (inputFileName, i+1, inputExtention))
-            content.append(fn)
+            fn = os.path.join(inputDir, "%s_part%d.%s" % (inputFileName, i+1, inputExtention)).replace("'", "\\'")
+            content.append("file '%s'" % fn)
         # end for
+        content.append("")
         prerequisite = FilePrerequisite(os.path.join(tempdirRoot(), "concats", "%s_parts.txt" % inputFileName), "\n".join(content))
         return [prerequisite]

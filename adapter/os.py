@@ -15,7 +15,7 @@ class OSOperation:
         return os.path.isdir(path)
 
     def open(self, path, mode):
-        return open(path, mode)
+        return open(path, mode, encoding="utf-8")
 
     def popen(self, args, **kwargs):
         return subprocess.Popen(args, **kwargs)
