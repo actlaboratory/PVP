@@ -70,3 +70,25 @@ class TestCutVideoTask(unittest.TestCase):
         prereq = task.getPrerequisites()
         self.assertEqual(len(prereq), 1)
         self.assertEqual(prereq[0].path, os.path.join(os.getcwd(), "temp\\concats\\test_parts.txt"))
+        lines = prereq[0].content.split("\n")
+        self.assertEqual(len(lines), 3)
+        self.assertEqual(lines[0], "file 'test_part1.mp4'")
+        self.assertEqual(lines[1], "file 'test_part2.mp4'")
+        self.assertEqual(lines[2], "")
+
+    def test_getPrerequisite_containsSingleQuote(self):
+        task = domain.CutVideoTask()
+        task.nthStep(1)._value = "cat's super meow time.mp4"
+        marker = domain.CutMarker(
+            startPoint=10000,
+            endPoint=20000,
+        )
+        task.nthStep(2)._value = [marker]
+        prereq = task.getPrerequisites()
+        self.assertEqual(len(prereq), 1)
+        self.assertEqual(prereq[0].path, os.path.join(os.getcwd(), "temp\\concats\\cat's super meow time_parts.txt"))
+        lines = prereq[0].content.split("\n")
+        self.assertEqual(len(lines), 3)
+        self.assertEqual(lines[0], "file 'cat\\'s super meow time_part1.mp4'")
+        self.assertEqual(lines[1], "file 'cat\\'s super meow time_part2.mp4'")
+        self.assertEqual(lines[2], "")
