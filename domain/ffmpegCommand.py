@@ -73,14 +73,14 @@ def makeTweetableAudioCommand(task):
     return chain
 
 
-def CutVideoCommand(task):
+def cutVideoCommand(task):
     ensureTaskIdentifier(task.identifier, "CutVideo")
     cutMarkers = task.nthStep(2).getValue()
     if len(cutMarkers) == 0:
         raise ValueError("cutMarkers must not be empty")
     # end if
     cuts = []
-    cuts.append((0, cutMarkers[0].startPoint))
+    cuts.append((millisecondsToPositionStr(0), cutMarkers[0].startPoint))
     for i in range(len(cutMarkers) - 1):
         cuts.append((cutMarkers[i].endPoint, cutMarkers[i + 1].startPoint))
     # end for
@@ -88,9 +88,11 @@ def CutVideoCommand(task):
     chain = CommandChain()
     concatSet = CommandSet()
     inputFile = task.nthStep(1).getValue()
+    i = 1
     for cut in cuts:
-        cmd = makeCutCommand(inputFile, cut[0], cut[1])
+        cmd = makeCutCommand(inputFile, cut[0], cut[1], i)
         concatSet.addCommand(cmd)
+        i += 1
     # end for
     chain.addCommandSet(concatSet)
     withoutExtension = os.path.basename(inputFile).split(".")[0]
@@ -114,30 +116,31 @@ def CutVideoCommand(task):
     chain.addCommandSet(joinSet)
     return chain
 
-def makeCutCommand(input, start, end):
+def makeCutCommand(input, start, end, part):
     root = tempdirRoot()
     cmd = [
         "ffmpeg",
         "-i",
         input,
         "-ss",
-        millisecondsToPositionStr(start),
+        start,
     ]
     if end is not None:
-        cmd.extend(["-to", millisecondsToPositionStr(end)])
+        cmd.extend(["-to", end])
     # end if
     withoutExtension = os.path.basename(input).split(".")[0]
     extension = os.path.basename(input).split(".")[1]
     cmd.extend([
         "-c",
         "copy",
-        os.path.join(root, "concats", "%s_part%d.%s" % (withoutExtension, i+1, extension))
+        os.path.join(root, "concats", "%s_part%d.%s" % (withoutExtension, part, extension))
     ])
     return Command(cmd)
 
 
 cmdMap = {
-    "MakeTweetableAudio": makeTweetableAudioCommand
+    "MakeTweetableAudio": makeTweetableAudioCommand,
+    "CutVideo": cutVideoCommand
 }
 
 def generateFfmpegCommand(task):
