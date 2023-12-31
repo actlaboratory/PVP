@@ -154,7 +154,7 @@ class Events(BaseEvents):
 		if selected == -1:
 			return
 		# end if
-		taskDef = domain.supportedTasks[selected]
+		taskDef = domain.supportedTasks()[selected]
 		task = taskDef.generateNewTask()
 		d = stepInputDialog.StepInputDialog(task)
 		d.Initialize()
