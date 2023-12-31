@@ -109,7 +109,7 @@ class CutVideoTask(TaskBase):
 
     def getPrerequisites(self):
         cutMarkers = self.nthStep(2).getValue()
-        inputDir = os.path.dirname(self.getInputFileName())
+        inputDir = os.path.join(tempdirRoot(), "concats")
         inputFileName = os.path.basename(self.getInputFileName()).split(".")[0]
         inputExtention = os.path.basename(self.getInputFileName()).split(".")[1]
         # If there is a single cut marker, we must cut the input file into two parts: before the marker start and after the marker end.
