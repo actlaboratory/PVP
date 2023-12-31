@@ -4,6 +4,13 @@ import os
 from .duration import *
 from .tempdir import *
 
+
+commonFfmpegOptions = [
+    "ffmpeg",
+    "-y",
+]
+
+
 class CommandChain:
     """
     This class represents a chain of commands.
@@ -52,8 +59,8 @@ def makeTweetableAudioCommand(task):
     ensureTaskIdentifier(task.identifier, "MakeTweetableAudio")
     chain = CommandChain()
     command1 = Command(
+        commonFfmpegOptions + 
         [
-            "ffmpeg",
             "-i",
             task.nthStep(1).getValue(),
             "-i",
@@ -84,7 +91,9 @@ def cutVideoCommand(task):
     for i in range(len(cutMarkers) - 1):
         cuts.append((cutMarkers[i].endPoint, cutMarkers[i + 1].startPoint))
     # end for
-    cuts.append((cutMarkers[-1].endPoint, None))
+    if len(cutMarkers) > 0 and cutMarkers[-1].endPoint is not None:
+        cuts.append((cutMarkers[-1].endPoint, None))
+    # end if
     chain = CommandChain()
     concatSet = CommandSet()
     inputFile = task.nthStep(1).getValue()
@@ -99,8 +108,8 @@ def cutVideoCommand(task):
     joinSet = CommandSet()
     joinSet.addCommand(
         Command(
+            commonFfmpegOptions + 
             [
-                "ffmpeg",
                 "-f",
                 "concat",
                 "-safe",
@@ -118,8 +127,7 @@ def cutVideoCommand(task):
 
 def makeCutCommand(input, start, end, part):
     root = tempdirRoot()
-    cmd = [
-        "ffmpeg",
+    cmd = commonFfmpegOptions + [
         "-i",
         input,
         "-ss",

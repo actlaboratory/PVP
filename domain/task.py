@@ -112,10 +112,10 @@ class CutVideoTask(TaskBase):
         inputDir = os.path.join(tempdirRoot(), "concats")
         inputFileName = os.path.basename(self.getInputFileName()).split(".")[0]
         inputExtention = os.path.basename(self.getInputFileName()).split(".")[1]
-        # If there is a single cut marker, we must cut the input file into two parts: before the marker start and after the marker end.
-        # As another cut point is added, we must cut the input file into three parts: before the first marker, between the first and second markers, and after the second marker.
-        # So, the number should be cutMarkers + 1.
         numFiles = len(cutMarkers) + 1
+        if len(cutMarkers) > 0 and cutMarkers[-1].endPoint == None:
+            numFiles -= 1
+        # end if
         content = []
         for i in range(numFiles):
             fn = os.path.join(inputDir, "%s_part%d.%s" % (inputFileName, i+1, inputExtention)).replace("'", "\\'")

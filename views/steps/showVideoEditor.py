@@ -149,7 +149,8 @@ class ShowVideoEditor(TabPanelBase):
 		if self._lastStartPoint is not None:
 			self._lastEndPoint = self.mediaCtrl.Tell()
 			self.swapPointsIfNeeded()
-			self._cutMarkerList.append(domain.CutMarker(domain.millisecondsToPositionStr(self._lastStartPoint), domain.millisecondsToPositionStr(self._lastEndPoint)))
+			# じつは「ここから」を押した時点で追加しているので、一番最近の要素を更新する
+			self._cutMarkerList[-1] = domain.CutMarker(domain.millisecondsToPositionStr(self._lastStartPoint), domain.millisecondsToPositionStr(self._lastEndPoint))
 			self._lastStartPoint = None
 			self._lastEndPoint = None
 			self.updateMarkersList()
@@ -157,6 +158,9 @@ class ShowVideoEditor(TabPanelBase):
 			return
 		# end カット終了点
 		self._lastStartPoint = self.mediaCtrl.Tell()
+		# 開始地点を選んだら、暗黙的に「動画の最後まで」とする
+		self._cutMarkerList.append(domain.CutMarker(domain.millisecondsToPositionStr(self._lastStartPoint), None))
+		self.updateMarkersList()
 		self.updateButtons()
 
 	def swapPointsIfNeeded(self):
@@ -169,7 +173,9 @@ class ShowVideoEditor(TabPanelBase):
 		prevIndex = self.markersListCtrl.GetSelection()
 		self.markersListCtrl.Clear()
 		for m in self._cutMarkerList:
-			self.markersListCtrl.Append(_("%s から %s まで") % (m.startPoint, m.endPoint))
+			s = m.startPoint
+			e = _("動画の最後") if m.endPoint is None else m.endPoint
+			self.markersListCtrl.Append(_("%s から %s まで") % (s, e))
 		# end for
 		if prevIndex >= 0 and prevIndex < self.markersListCtrl.GetCount():
 			self.markersListCtrl.SetSelection(prevIndex)
@@ -186,9 +192,15 @@ class ShowVideoEditor(TabPanelBase):
 		if index == wx.NOT_FOUND:
 			return
 		# end 選択されていない
+		# 暗黙的に「動画の最後まで」となっているときは、つじつまを合わせる必要がある
+		if len(self._cutMarkerList) == index + 1 and self._cutMarkerList[index].endPoint is None:
+			self._lastStartPoint = None
+		# end つじつま合わせ
 		self._cutMarkerList.pop(index)
 		self.updateMarkersList()
+		self.updateButtons()
 
 	def onMarkersListKeyUp(self, event):
 		if event.GetKeyCode() == wx.WXK_DELETE:
 			self.deleteMarker()
+
