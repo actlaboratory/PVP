@@ -15,3 +15,4 @@ pl_auto_save
 runCMD.bat
 *.po~
 temp/
+*.zip
