@@ -1,3 +1,6 @@
+import builtins
+builtins.__dict__['_'] = lambda s: s
+
 import os
 import unittest
 import domain

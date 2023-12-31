@@ -50,7 +50,7 @@ class ShowVideoEditor(TabPanelBase):
 			1011: domain.SeekInterval("percent", 10),
 		}
 		menu = wx.Menu()
-		self.item1 = menu.Append(1001, _("3秒"))
+		menu.Append(1001, _("3秒"))
 		menu.Append(1002, _("5秒"))
 		menu.Append(1003, _("10秒"))
 		menu.Append(1004, _("30秒"))

@@ -1,8 +1,5 @@
 import re
 
-if '_' not in globals():
-    globals()['_'] = lambda x: x
-
 
 class SeekInterval:
     def __init__(self, secondOrPercent, value):

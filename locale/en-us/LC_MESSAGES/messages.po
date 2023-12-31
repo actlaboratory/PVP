@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: test\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-18 15:45+0900\n"
-"PO-Revision-Date: 2022-09-18 15:47+0900\n"
+"POT-Creation-Date: 2023-12-31 11:07+0900\n"
+"PO-Revision-Date: 2023-12-31 11:23+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#: AppBase.py:49
+#: AppBase.py:51
 msgid ""
 "ログ機能の初期化に失敗しました。下記のファイルへのアクセスが可能であることを"
 "確認してください。"
@@ -25,11 +25,11 @@ msgstr ""
 "Failed to initialize logger. Make sure you have permission to access to the "
 "following file:"
 
-#: AppBase.py:58
+#: AppBase.py:60
 msgid "音声エンジンエラー"
 msgstr "Speech Synthesizer Error"
 
-#: AppBase.py:58
+#: AppBase.py:60
 msgid ""
 "音声読み上げ機能の初期化に失敗したため、読み上げ機能を使用できません。出力先"
 "の変更をお試しください。"
@@ -72,26 +72,22 @@ msgid "この組み合わせは別の用途で予約されているため、利�
 msgstr "This keystroke is already reserved."
 
 #: menuItemsDic.py:12
-msgid "テストダイアログを閲覧"
-msgstr ""
-
-#: menuItemsDic.py:13
 msgid "終了(&X)"
 msgstr "E&xit"
 
-#: menuItemsDic.py:15 views\main.py:70
+#: menuItemsDic.py:14 views\main.py:84
 msgid "オプション(&O)"
 msgstr "&Options"
 
-#: menuItemsDic.py:16
+#: menuItemsDic.py:15
 msgid "ショートカットキーの設定(&K)"
 msgstr "Shortcut &Key Settings"
 
-#: menuItemsDic.py:18
+#: menuItemsDic.py:17
 msgid "最新バージョンを確認(&U)"
 msgstr "Check For &Updates"
 
-#: menuItemsDic.py:19
+#: menuItemsDic.py:18
 msgid "バージョン情報(&V)"
 msgstr "&Version Info"
 
@@ -149,11 +145,81 @@ msgstr ""
 "Download has successfully finished.\n"
 "Update will be started when closing the application."
 
-#: views\base.py:68
+#: domain\duration.py:19
+msgid "パーセント"
+msgstr "percent"
+
+#: domain\duration.py:23
+msgid "分"
+msgstr "min"
+
+#: domain\duration.py:25
+msgid "秒"
+msgstr "sec"
+
+#: domain\step.py:79
+msgid "入力: 音声ファイルを1つ選択"
+msgstr "Input: choose an audio file"
+
+#: domain\step.py:83 domain\step.py:97 domain\step.py:132
+msgid "指定されたファイルがありません。"
+msgstr "The specified file does not exist"
+
+#: domain\step.py:93
+msgid "入力: 画像ファイルを1つ選択"
+msgstr "Input: Choose an image file"
+
+#: domain\step.py:107
+msgid "出力: Twitter用動画の保存先を指定"
+msgstr "Output: Choose destination for the tweetable video"
+
+#: domain\step.py:117
+msgid "入力: プリセットから画像を選択"
+msgstr "Input: Choose an image from preset"
+
+#: domain\step.py:128
+msgid "入力: 動画ファイルを1つ選択"
+msgstr "Input: Choose a video file"
+
+#: domain\step.py:142
+msgid "出力: 動画の保存先を指定"
+msgstr "Output: Choose destination for the video"
+
+#: domain\step.py:153
+msgid "出力: カット範囲を指定"
+msgstr "Output: Set cut areas"
+
+#: domain\task.py:59
+#, python-format
+msgid "%s のステップが完了していません。"
+msgstr "step: %s has not been completed."
+
+#: domain\task.py:71
+#, python-format
+msgid "%s のうち、どれか一つを入力してください。"
+msgstr "Please input one of the following: %s"
+
+#: domain\taskDefinition.py:20
+msgid "動画のカット編集"
+msgstr "Cut a video"
+
+#: domain\taskDefinition.py:21
+msgid "シンプルな操作で動画の一部分を切り抜きます"
+msgstr "Cut a video file with a simple control scheme"
+
+#: domain\taskDefinition.py:25
+msgid "音声ファイルをTwitter投稿"
+msgstr "Post a video on Twitter"
+
+#: domain\taskDefinition.py:26
+msgid "音声と画像ファイルからTwitter投稿用の動画ファイルを作成します。"
+msgstr "Make a tweetable video file with an audio and image"
+
+#: views\base.py:69
 msgid "現在メニューは操作できません"
 msgstr "You cannot use the menu at the moment."
 
-#: views\base.py:116
+#: views\base.py:117
 msgid ""
 "で設定されたショートカットキーが正しくありません。キーの重複、存在しないキー"
 "名の指定、使用できないキーパターンの指定などが考えられます。以下のキーの設定"
@@ -163,9 +229,11 @@ msgstr ""
 "keyboard shortcut is invalid. Please check for conflicting / unusable key "
 "combinations and key names.\n"
 
-#: views\base.py:119 views\fontManager.py:25 views\fontManager.py:50
-#: views\globalKeyConfig.py:61 views\KeyValueSettingDialogBase.py:297
-#: views\KeyValueSettingDialogBase.py:348 views\updateDialog.py:66
+#: views\base.py:120 views\fontManager.py:25 views\fontManager.py:50
+#: views\globalKeyConfig.py:61 views\KeyValueSettingDialogBase.py:301
+#: views\KeyValueSettingDialogBase.py:352 views\main.py:188 views\main.py:192
+#: views\stepInputDialog.py:86 views\stepInputDialog.py:166
+#: views\updateDialog.py:66
 msgid "エラー"
 msgstr "error"
 
@@ -190,7 +258,7 @@ msgstr "shortcut"
 msgid "識別子"
 msgstr "identifier"
 
-#: views\globalKeyConfig.py:31 views\main.py:90
+#: views\globalKeyConfig.py:31 views\main.py:99
 msgid "ショートカットキーの設定"
 msgstr "Shortcut Key Configuration"
 
@@ -198,8 +266,8 @@ msgstr "Shortcut Key Configuration"
 #: views\globalKeyConfig.py:102 views\globalKeyConfig.py:107
 #: views\globalKeyConfig.py:120 views\globalKeyConfig.py:128
 #: views\globalKeyConfig.py:138 views\globalKeyConfig.py:143
-#: views\keyConfig.py:57 views\KeyValueSettingDialogBase.py:333
-#: views\main.py:122 views\main.py:136
+#: views\keyConfig.py:57 views\KeyValueSettingDialogBase.py:337
+#: views\main.py:131 views\main.py:145
 msgid "なし"
 msgstr "None"
 
@@ -275,7 +343,7 @@ msgstr ""
 msgid "設定解除"
 msgstr "remove registered configuration"
 
-#: views\KeyValueSettingDialogBase.py:54
+#: views\KeyValueSettingDialogBase.py:52
 msgid "現在の登録内容"
 msgstr "Current Settings"
 
@@ -291,46 +359,46 @@ msgstr "&Modify"
 msgid "削除(&D)"
 msgstr "&Delete"
 
-#: views\KeyValueSettingDialogBase.py:83 views\KeyValueSettingDialogBase.py:274
-#: views\SimpleInputDialog.py:39
+#: views\KeyValueSettingDialogBase.py:84 views\KeyValueSettingDialogBase.py:278
+#: views\SimpleInputDialog.py:55
 msgid "ＯＫ"
 msgstr "OK"
 
-#: views\KeyValueSettingDialogBase.py:84 views\KeyValueSettingDialogBase.py:275
-#: views\settingsDialog.py:92 views\SimpleInputDialog.py:40
+#: views\KeyValueSettingDialogBase.py:85 views\KeyValueSettingDialogBase.py:279
+#: views\main.py:197 views\settingsDialog.py:92 views\SimpleInputDialog.py:56
 #: views\updateDialog.py:45
 msgid "キャンセル"
 msgstr "cancel"
 
-#: views\KeyValueSettingDialogBase.py:125
-#: views\KeyValueSettingDialogBase.py:155
+#: views\KeyValueSettingDialogBase.py:126
+#: views\KeyValueSettingDialogBase.py:156
 #, python-format
 msgid "この%sは既に登録されています。登録を上書きしますか？"
 msgstr "This %s is already registered. Do you wish to overwrite?"
 
-#: views\KeyValueSettingDialogBase.py:125
-#: views\KeyValueSettingDialogBase.py:155
+#: views\KeyValueSettingDialogBase.py:126
+#: views\KeyValueSettingDialogBase.py:156
 msgid "上書き確認"
 msgstr "Overwriting Confirmation"
 
-#: views\KeyValueSettingDialogBase.py:297
+#: views\KeyValueSettingDialogBase.py:301
 #, python-format
 msgid "%sを空白や半角の=を含む値に設定することはできません。"
 msgstr "%s cannot include space and equals sign."
 
-#: views\KeyValueSettingDialogBase.py:337
+#: views\KeyValueSettingDialogBase.py:341
 #, python-format
 msgid "%(v1)sと%(v2)sに同じショートカットキー%(key)sが設定されています。\n"
 msgstr "%(v1)s and %(v2)s have same shortcut key %(key)s.\n"
 
-#: views\KeyValueSettingDialogBase.py:340
+#: views\KeyValueSettingDialogBase.py:344
 #, python-format
 msgid ""
 "%(v1)s、%(v2)sなど計%(count)d箇所に同じショートカットキー%(key)sが設定されて"
 "います。\n"
 msgstr "%(key)s is registered at %(count)i items, %(v1)s, %(v2)s and more.\n"
 
-#: views\KeyValueSettingDialogBase.py:344
+#: views\KeyValueSettingDialogBase.py:348
 #, python-format
 msgid ""
 "設定されたショートカット%sが認識できません。お手数ですが、このエラーメッセー"
@@ -339,7 +407,7 @@ msgstr ""
 "Configured shortcut %s cannot be recognized. Please contact the developer "
 "for further assistance.\n"
 
-#: views\KeyValueSettingDialogBase.py:346
+#: views\KeyValueSettingDialogBase.py:350
 #, python-format
 msgid ""
 "%(command)sに設定されたショートカットキー%(key)sは、別の場所で利用されていま"
@@ -347,21 +415,66 @@ msgid ""
 msgstr ""
 "The key combination %(key)s, configured as %(command)s, is reserved.\\n\n"
 
-#: views\main.py:69
+#: views\main.py:40
+msgid "今日は何をしますか？"
+msgstr "What do you want to do today?"
+
+#: views\main.py:41
+msgid "タスク"
+msgstr "Task"
+
+#: views\main.py:42
+msgid "説明"
+msgstr "Description"
+
+#: views\main.py:49
+msgid "開始"
+msgstr "Start"
+
+#: views\main.py:50
+#, fuzzy
+msgid "終了"
+msgstr "E&xit"
+
+#: views\main.py:83
 msgid "ファイル(&F))"
 msgstr "&File"
 
-#: views\main.py:71
+#: views\main.py:85
 msgid "ヘルプ(&H)"
 msgstr "&Help"
 
-#: views\sample.py:16
-msgid "サンプル"
-msgstr ""
+#: views\main.py:182 views\stepInputDialog.py:141
+msgid "完了"
+msgstr "Finish"
 
-#: views\sample.py:24
-msgid "OK"
+#: views\main.py:182
+msgid "コマンドの実行が完了しました。"
+msgstr "Finished executing command."
+
+#: views\main.py:188
+msgid "コマンドの実行中に予期せぬエラーが発生しました。"
+msgstr "An unexpected error has occurred during the command execution."
+
+#: views\main.py:192
+msgid ""
+"コマンドを実行した結果、エラーが返されました。エラーログを開発者に送ってみて"
+"ください。"
 msgstr ""
+"An error has been returned from the command. Please see the log file for "
+"details."
+
+#: views\main.py:197
+msgid "コマンドの実行をキャンセルしました。"
+msgstr "Cancelled the command execution."
+
+#: views\processingDialog.py:22
+msgid "実行しています..."
+msgstr "Processing..."
+
+#: views\processingDialog.py:33 views\stepInputDialog.py:51
+msgid "中止"
+msgstr "Abort"
 
 #: views\settingsDialog.py:25
 msgid "音声なし"
@@ -443,6 +556,63 @@ msgstr "server URL"
 msgid "ポート番号"
 msgstr "port number"
 
+#: views\SimpleInputDialog.py:87 views\SimpleInputDialog.py:96
+msgid "入力内容に誤りがあります。"
+msgstr "There is an error in the input."
+
+#: views\SimpleInputDialog.py:87
+#, python-format
+msgid "行: %d"
+msgstr "Line: %d"
+
+#: views\SimpleInputDialog.py:92
+msgid "有効な値が入力されていません。"
+msgstr "What you have entered is not valid."
+
+#: views\stepConfirmDialog.py:5 views\stepInputDialog.py:181
+msgid "確認"
+msgstr "Confirmation"
+
+#: views\stepConfirmDialog.py:6
+msgid "問題なし！"
+msgstr "No problem!"
+
+#: views\stepConfirmDialog.py:6
+msgid "戻る"
+msgstr "Go back"
+
+#: views\stepInputDialog.py:36
+msgid "入力"
+msgstr "Input"
+
+#: views\stepInputDialog.py:43
+msgid "ステップ"
+msgstr "Step"
+
+#: views\stepInputDialog.py:47 views\stepInputDialog.py:143
+msgid "次のステップ"
+msgstr "Next step"
+
+#: views\stepInputDialog.py:48
+msgid "前のステップ"
+msgstr "Previous step"
+
+#: views\stepInputDialog.py:93
+msgid "本当にこの設定値で続行しますか？"
+msgstr "Do you really wish to continue with this setting?"
+
+#: views\stepInputDialog.py:131
+msgid "必須"
+msgstr "required"
+
+#: views\stepInputDialog.py:131
+msgid "任意"
+msgstr "optional"
+
+#: views\stepInputDialog.py:181
+msgid "本当に中止しますか？"
+msgstr "Are you sure you want to abort?"
+
 #: views\updateDialog.py:23
 #, python-format
 msgid "アップデート - %s"
@@ -514,4 +684,4 @@ msgstr "close"
 
 #: views\web.py:28
 msgid "googleアカウント認証"
-msgstr ""
+msgstr "Google account authentication"

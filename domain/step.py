@@ -1,10 +1,7 @@
 import os
 
-if '_' not in globals():
-    globals()['_'] = lambda x: x
 
 # Editing steps
-
 supportedStepTypes = [
     "InputSingleAudioFile",
     "InputSingleImageFile",
