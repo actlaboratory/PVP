@@ -13,20 +13,26 @@ class ShowVideoEditor(TabPanelBase):
 		self._lastEndPoint = None
 		self._lastLoadedFile = None
 		self.installIntervalMenu()
-		self.mediaCtrl = wx.media.MediaCtrl(self.hPanel, name=_("メディアコントロール"))
-		self.mediaCtrl.Bind(wx.media.EVT_MEDIA_STATECHANGED, self.onMediaStateChange)
-		buttonsArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
-		self.playButton = buttonsArea.button(_("再生"), self.onPlayButtonClick)
-		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval}, self.onBackwardButtonClick)
-		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval}, self.onForwardButtonClick)
-		self.changeIntervalButton = buttonsArea.button(_("間隔調整: %(interval)s") % {"interval": self._seekInterval}, self.onChangeIntervalPopup)
-		self.gotoButton = buttonsArea.button(_("指定時間へ"), self.onGotoButtonClick)
-		self.cutTriggerButton = buttonsArea.button(_("ここからカット"), self.onCutTriggerButtonClick)
-		listArea = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
-		self.markersListCtrl, unused = listArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(200, 300))
+
+		horizontalCreator = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,proportion=1, margin=0)
+		leftArea = views.ViewCreator.ViewCreator(horizontalCreator.GetMode(),horizontalCreator.GetPanel(), horizontalCreator.GetSizer(), wx.VERTICAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
+
+		self.mediaCtrl, unused = leftArea.mediaCtrl(_("メディアコントロール"), self.onMediaStateChange, size=(300,300), sizerFlag=wx.EXPAND|wx.ALL, proportion=1, textLayout=None)
+
+		self.markersListCtrl, unused = leftArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(500, 150))
 		self.installContextMenu()
 		self.markersListCtrl.Bind(wx.EVT_CONTEXT_MENU, self.onContextMenu)
 		self.markersListCtrl.Bind(wx.EVT_KEY_UP, self.onMarkersListKeyUp)
+
+
+		buttonsArea = views.ViewCreator.ViewCreator(horizontalCreator.GetMode(), horizontalCreator.GetPanel(), horizontalCreator.GetSizer(), wx.VERTICAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
+		self.playButton = buttonsArea.button(_("再生"), self.onPlayButtonClick, sizerFlag=wx.EXPAND)
+		self.backwardButton = buttonsArea.button(_("%(interval)s戻す") % {"interval": self._seekInterval}, self.onBackwardButtonClick, sizerFlag=wx.EXPAND)
+		self.forwardButton = buttonsArea.button(_("%(interval)s進める") % {"interval": self._seekInterval}, self.onForwardButtonClick, sizerFlag=wx.EXPAND)
+		self.changeIntervalButton = buttonsArea.button(_("間隔調整: %(interval)s") % {"interval": self._seekInterval}, self.onChangeIntervalPopup, sizerFlag=wx.EXPAND)
+		self.gotoButton = buttonsArea.button(_("指定時間へ"), self.onGotoButtonClick, sizerFlag=wx.EXPAND)
+		self.cutTriggerButton = buttonsArea.button(_("ここからカット"), self.onCutTriggerButtonClick, sizerFlag=wx.EXPAND)
+
 		self.updateButtons()
 
 	def installIntervalMenu(self):
