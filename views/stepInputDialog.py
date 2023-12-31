@@ -178,8 +178,12 @@ class StepInputDialog(BaseDialog):
 		self.updateButtonAttributes()
 
 	def onAbortButtonClick(self, event):
-		self.task.markAsCanceled()
-		self.wnd.EndModal(wx.ID_CANCEL)
+		with wx.MessageDialog(self.wnd, _("本当に中止しますか？"), _("確認"), wx.YES_NO | wx.ICON_QUESTION) as dlg:
+			if dlg.ShowModal() == wx.ID_YES:
+				self.task.markAsCanceled()
+				self.wnd.EndModal(wx.ID_CANCEL)
+			# end キャンセル
+		# end with
 
 	def Destroy(self, events = None):
 		self.log.debug("destroy")
