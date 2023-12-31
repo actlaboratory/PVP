@@ -72,8 +72,9 @@ class TestCutVideoTask(unittest.TestCase):
         self.assertEqual(prereq[0].path, os.path.join(os.getcwd(), "temp\\concats\\test_parts.txt"))
         lines = prereq[0].content.split("\n")
         self.assertEqual(len(lines), 3)
-        self.assertEqual(lines[0], "file 'test_part1.mp4'")
-        self.assertEqual(lines[1], "file 'test_part2.mp4'")
+        dir = os.path.join(os.getcwd(), "temp\\concats")
+        self.assertEqual(lines[0], "file '%s\\test_part1.mp4'" % dir)
+        self.assertEqual(lines[1], "file '%s\\test_part2.mp4'" % dir)
         self.assertEqual(lines[2], "")
 
     def test_getPrerequisite_containsSingleQuote(self):
@@ -89,6 +90,7 @@ class TestCutVideoTask(unittest.TestCase):
         self.assertEqual(prereq[0].path, os.path.join(os.getcwd(), "temp\\concats\\cat's super meow time_parts.txt"))
         lines = prereq[0].content.split("\n")
         self.assertEqual(len(lines), 3)
-        self.assertEqual(lines[0], "file 'cat\\'s super meow time_part1.mp4'")
-        self.assertEqual(lines[1], "file 'cat\\'s super meow time_part2.mp4'")
+        dir = os.path.join(os.getcwd(), "temp\\concats")
+        self.assertEqual(lines[0], "file '%s\\cat\\'s super meow time_part1.mp4'" % dir)
+        self.assertEqual(lines[1], "file '%s\\cat\\'s super meow time_part2.mp4'" % dir)
         self.assertEqual(lines[2], "")
