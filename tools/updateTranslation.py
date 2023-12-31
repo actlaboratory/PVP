@@ -25,7 +25,7 @@ for l in langs:
 	print(l)
 
 files=glob.glob("*.py")
-files.extend(glob.glob("*/*.py", recursive=True))
+files.extend(glob.glob("**/*.py", recursive=True))
 print("Detected files:")
 print("Detected files: %d" % len(files))
 
