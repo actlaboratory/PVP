@@ -40,6 +40,7 @@ class MainView(BaseView):
 		self.whatToDo, unused = vc.listCtrl(_("今日は何をしますか？"), proportion=1, sizerFlag=wx.EXPAND)
 		self.whatToDo.AppendColumn(_("タスク"), width = 450)
 		self.whatToDo.AppendColumn(_("説明"), width = 1000)
+		self.whatToDo.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.events.startTask)
 		for task in domain.supportedTasks:
 			self.whatToDo.Append([task.displayName, task.description])
 		# end append task
