@@ -5,8 +5,6 @@
 defaultKeymap={}
 
 defaultKeymap["mainView"]={
-	"FILE_EXAMPLE": "ctrl+F12/shift+delete/ctrl+c/INSERT/ctrl+BACK",
-
 	"OPTION_OPTION":"",
 	"OPTION_KEY_CONFIG":"",
 
