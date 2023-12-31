@@ -33,6 +33,8 @@ class ShowVideoEditor(TabPanelBase):
 		self.gotoButton = buttonsArea.button(_("指定時間へ"), self.onGotoButtonClick, sizerFlag=wx.EXPAND)
 		self.cutTriggerButton = buttonsArea.button(_("ここからカット"), self.onCutTriggerButtonClick, sizerFlag=wx.EXPAND)
 
+		self.installAcceleratorTable()
+
 		self.updateButtons()
 
 	def installIntervalMenu(self):
@@ -69,6 +71,17 @@ class ShowVideoEditor(TabPanelBase):
 		contextMenu.Append(1101, _("削除"))
 		contextMenu.Bind(wx.EVT_MENU, self.onContextMenuSelect)
 		self.contextMenu = contextMenu
+
+	def installAcceleratorTable(self):
+		acceleratorTable = wx.AcceleratorTable([
+			(wx.ACCEL_CTRL, ord("P"), self.playButton.GetId()),
+			(wx.ACCEL_CTRL, ord("B"), self.backwardButton.GetId()),
+			(wx.ACCEL_CTRL, ord("F"), self.forwardButton.GetId()),
+			(wx.ACCEL_CTRL, ord("G"), self.gotoButton.GetId()),
+			(wx.ACCEL_CTRL, ord("J"), self.cutTriggerButton.GetId()),
+			(wx.ACCEL_CTRL, ord("I"), self.changeIntervalButton.GetId()),
+		])
+		self.hPanel.SetAcceleratorTable(acceleratorTable)
 
 	def getValueOrNone(self):
 		"""入力値: domain.CutMarker のリスト or None"""
