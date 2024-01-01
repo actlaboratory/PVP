@@ -16,7 +16,7 @@ class DurationInputDialog(BaseDialog):
 	def __init__(self, parent=None, defaultValue=""):
 		super().__init__("DurationInputDialog")
 		self.title= _("指定時間へ移動")
-		self.detail = "h または hh:mm または hh:mm:ss または hh:mm:ss:xxx"
+		self.detail = "h または hh:mm または hh:mm:ss または hh:mm:ss.xxx"
 		self.default=defaultValue
 		if parent!=None:
 			self.parent=parent
