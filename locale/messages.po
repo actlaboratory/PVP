@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PVP\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-31 17:49+0900\n"
+"POT-Creation-Date: 2024-01-01 14:15+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,7 +221,7 @@ msgstr ""
 
 #: views\base.py:120 views\fontManager.py:25 views\fontManager.py:50
 #: views\globalKeyConfig.py:61 views\KeyValueSettingDialogBase.py:301
-#: views\KeyValueSettingDialogBase.py:352 views\main.py:188 views\main.py:192
+#: views\KeyValueSettingDialogBase.py:352 views\main.py:200 views\main.py:204
 #: views\stepInputDialog.py:86 views\stepInputDialog.py:166
 #: views\updateDialog.py:66
 msgid "エラー"
@@ -248,7 +248,7 @@ msgstr ""
 msgid "識別子"
 msgstr ""
 
-#: views\globalKeyConfig.py:31 views\main.py:99
+#: views\globalKeyConfig.py:31 views\main.py:110
 msgid "ショートカットキーの設定"
 msgstr ""
 
@@ -257,7 +257,7 @@ msgstr ""
 #: views\globalKeyConfig.py:120 views\globalKeyConfig.py:128
 #: views\globalKeyConfig.py:138 views\globalKeyConfig.py:143
 #: views\keyConfig.py:57 views\KeyValueSettingDialogBase.py:337
-#: views\main.py:131 views\main.py:145
+#: views\main.py:142 views\main.py:156
 msgid "なし"
 msgstr ""
 
@@ -350,7 +350,7 @@ msgid "ＯＫ"
 msgstr ""
 
 #: views\KeyValueSettingDialogBase.py:85 views\KeyValueSettingDialogBase.py:279
-#: views\main.py:197 views\settingsDialog.py:92 views\SimpleInputDialog.py:56
+#: views\main.py:209 views\settingsDialog.py:92 views\SimpleInputDialog.py:56
 #: views\updateDialog.py:45 views\steps\durationInput.py:39
 msgid "キャンセル"
 msgstr ""
@@ -425,25 +425,33 @@ msgstr ""
 msgid "ヘルプ(&H)"
 msgstr ""
 
-#: views\main.py:182 views\stepInputDialog.py:141
+#: views\main.py:96
+msgid "作業フォルダの中身をきれいにしてから終了しますか？"
+msgstr ""
+
+#: views\main.py:96 views\stepConfirmDialog.py:5 views\stepInputDialog.py:181
+msgid "確認"
+msgstr ""
+
+#: views\main.py:194 views\stepInputDialog.py:141
 msgid "完了"
 msgstr ""
 
-#: views\main.py:182
+#: views\main.py:194
 msgid "コマンドの実行が完了しました。"
 msgstr ""
 
-#: views\main.py:188
+#: views\main.py:200
 msgid "コマンドの実行中に予期せぬエラーが発生しました。"
 msgstr ""
 
-#: views\main.py:192
+#: views\main.py:204
 msgid ""
 "コマンドを実行した結果、エラーが返されました。エラーログを開発者に送ってみて"
 "ください。"
 msgstr ""
 
-#: views\main.py:197
+#: views\main.py:209
 msgid "コマンドの実行をキャンセルしました。"
 msgstr ""
 
@@ -546,10 +554,6 @@ msgstr ""
 
 #: views\SimpleInputDialog.py:92
 msgid "有効な値が入力されていません。"
-msgstr ""
-
-#: views\stepConfirmDialog.py:5 views\stepInputDialog.py:181
-msgid "確認"
 msgstr ""
 
 #: views\stepConfirmDialog.py:6
@@ -735,94 +739,106 @@ msgstr ""
 msgid "メディアコントロール"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:22
+#: views\steps\showVideoEditor.py:23
 msgid "カットする箇所"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:29 views\steps\showVideoEditor.py:112
+#: views\steps\showVideoEditor.py:30 views\steps\showVideoEditor.py:128
 msgid "再生"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:30 views\steps\showVideoEditor.py:106
+#: views\steps\showVideoEditor.py:31 views\steps\showVideoEditor.py:122
 #, python-format
 msgid "%(interval)s戻す"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:31 views\steps\showVideoEditor.py:107
+#: views\steps\showVideoEditor.py:32 views\steps\showVideoEditor.py:123
 #, python-format
 msgid "%(interval)s進める"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:32 views\steps\showVideoEditor.py:105
+#: views\steps\showVideoEditor.py:33 views\steps\showVideoEditor.py:121
 #, python-format
 msgid "間隔調整: %(interval)s"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:33
+#: views\steps\showVideoEditor.py:34
 msgid "指定時間へ"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:34 views\steps\showVideoEditor.py:114
+#: views\steps\showVideoEditor.py:35 views\steps\showVideoEditor.py:130
 msgid "ここからカット"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:53
+#: views\steps\showVideoEditor.py:56
 msgid "3秒"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:54
+#: views\steps\showVideoEditor.py:57
 msgid "5秒"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:55
+#: views\steps\showVideoEditor.py:58
 msgid "10秒"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:56
+#: views\steps\showVideoEditor.py:59
 msgid "30秒"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:57
+#: views\steps\showVideoEditor.py:60
 msgid "1分"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:58
+#: views\steps\showVideoEditor.py:61
 msgid "3分"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:59
+#: views\steps\showVideoEditor.py:62
 msgid "5分"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:60
+#: views\steps\showVideoEditor.py:63
 msgid "10分"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:61
+#: views\steps\showVideoEditor.py:64
 msgid "1%"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:62
+#: views\steps\showVideoEditor.py:65
 msgid "5%"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:63
+#: views\steps\showVideoEditor.py:66
 msgid "10%"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:69
+#: views\steps\showVideoEditor.py:72
 msgid "削除"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:110
+#: views\steps\showVideoEditor.py:73
+msgid "カット開始地点に移動"
+msgstr ""
+
+#: views\steps\showVideoEditor.py:74
+msgid "カット終了地点に移動"
+msgstr ""
+
+#: views\steps\showVideoEditor.py:126
 msgid "停止"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:116
+#: views\steps\showVideoEditor.py:132
 msgid "ここまでカット"
 msgstr ""
 
-#: views\steps\showVideoEditor.py:172
+#: views\steps\showVideoEditor.py:193
+msgid "動画の最後"
+msgstr ""
+
+#: views\steps\showVideoEditor.py:194
 #, python-format
 msgid "%s から %s まで"
 msgstr ""
