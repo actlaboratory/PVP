@@ -13,7 +13,7 @@ class TestFfmpegCommand(unittest.TestCase):
         set = chain.nthCommandSet(1)
         self.assertEqual(set.countCommands(), 1)
         cmd = " ".join(set.nthCommand(1).command)
-        self.assertEqual(cmd, "ffmpeg -i test.mp3 -i test.jpg -loop 1 -vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -pix_fmt yuv420p test.mp4")
+        self.assertEqual(cmd, "ffmpeg -y -i test.mp3 -i test.jpg -loop 1 -vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -pix_fmt yuv420p test.mp4")
 
     def test_cutVideoCommand(self):
         task = domain.CutVideoTask()
@@ -28,6 +28,6 @@ class TestFfmpegCommand(unittest.TestCase):
         set = chain.nthCommandSet(1)
         self.assertEqual(set.countCommands(), 2)
         cmd = " ".join(set.nthCommand(1).command)
-        self.assertEqual(cmd, "ffmpeg -i test.mp4 -ss 00:00:00.000 -to 00:00:01.000 -c copy %s" % os.path.join(concatDir, "test_part1.mp4"))
+        self.assertEqual(cmd, "ffmpeg -y -i test.mp4 -ss 00:00:00.000 -to 00:00:01.000 -c copy %s" % os.path.join(concatDir, "test_part1.mp4"))
         cmd = " ".join(set.nthCommand(2).command)
-        self.assertEqual(cmd, "ffmpeg -i test.mp4 -ss 00:00:02.000 -c copy %s" % os.path.join(concatDir, "test_part2.mp4"))
+        self.assertEqual(cmd, "ffmpeg -y -i test.mp4 -ss 00:00:02.000 -c copy %s" % os.path.join(concatDir, "test_part2.mp4"))
