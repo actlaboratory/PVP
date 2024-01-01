@@ -129,6 +129,14 @@ class ShowVideoEditor(TabPanelBase):
 			self.cutTriggerButton.SetLabel(_("ここからカット"))
 		else:
 			self.cutTriggerButton.SetLabel(_("ここまでカット"))
+		# ファイルが読み込まれてなければ、全部のボタンを無効化する
+		if self._lastLoadedFile is None:
+			self.playButton.Enable(False)
+			self.backwardButton.Enable(False)
+			self.forwardButton.Enable(False)
+			self.changeIntervalButton.Enable(False)
+			self.gotoButton.Enable(False)
+			self.cutTriggerButton.Enable(False)
 
 	def onMediaStateChange(self, event):
 		self.updateButtons()
