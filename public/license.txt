@@ -1,6 +1,6 @@
 Copyright (c)2021 Yukio Nozawa,ACT laboratory All rights reserved.
 
-本ソフトウェアは、Apache License 2.0の条件に従い、自由に利用することができます。
+本ソフトウェアは、GNU GENERAL PUBLIC LICENSE Version3(またはそれ以降の任意のバージョン)の条件に従い、自由に利用することができます。
 本ソフトウェアのソースコードは、readme.txtに記載のURLよりダウンロード可能です。
 
 ※本ソフトウェアには、以下の各ライセンスに従い他者の成果物を含みます。
@@ -20,8 +20,9 @@ Copyright (c)2021 Yukio Nozawa,ACT laboratory All rights reserved.
 ・MS-PLに基づく以下のライブラリ
 	DotNetZip
 
-
-
+・GPLv3に基づく以下のライブラリ
+	ffmpeg (https://ffmpeg.org/)
+		Copyright (c) 2000-2021 the FFmpeg developers
 
 その他、個別のライセンスに基づく複数のライブラリ
 
