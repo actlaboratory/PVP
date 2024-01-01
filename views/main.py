@@ -87,7 +87,18 @@ class Menu(BaseMenu):
 
 
 class Events(BaseEvents):
+	def __init__(self, parent, identifier):
+		super().__init__(parent, identifier)
+		self.didSomething = False
+
 	def exit(self, event):
+		if self.didSomething:
+			with wx.MessageDialog(self.parent.hFrame, _("作業フォルダの中身をきれいにしてから終了しますか？"), _("確認"), wx.YES_NO | wx.ICON_QUESTION) as d:
+				if d.ShowModal() == wx.ID_YES:
+					adapter.cleanTempdir()
+				# end if
+			# end with
+		# end 何かした
 		self.parent.hFrame.Close()
 
 	def option(self, event):
@@ -162,6 +173,7 @@ class Events(BaseEvents):
 		if task.isCanceled():
 			return
 		# end キャンセル
+		self.didSomething = True
 		prereq = task.getPrerequisites()
 		for p in prereq:
 			# 今はFilePrerequisiteしかない

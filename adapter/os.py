@@ -4,6 +4,7 @@ I'm wrapping these functions here so that I can mock them in tests.
 """
 
 import os
+import shutil
 import subprocess
 from logging import getLogger
 
@@ -25,3 +26,6 @@ class OSOperation:
 
     def getLogger(self, name):
         return getLogger(name)
+
+    def rmtree(self, path):
+        return shutil.rmtree(path)

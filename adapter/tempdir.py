@@ -17,3 +17,6 @@ def makeTempdir(structure, prevDirs=[], osOperation=OSOperation()):
         makeTempdir(v, prevDirs + [k], osOperation)
     # end for
 # end makeTempdir
+
+def cleanTempdir(osOperation=OSOperation()):
+    osOperation.rmtree(os.path.join(os.getcwd(), "temp"))
