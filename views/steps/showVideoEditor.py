@@ -18,7 +18,6 @@ class ShowVideoEditor(TabPanelBase):
 		leftArea = views.ViewCreator.ViewCreator(horizontalCreator.GetMode(),horizontalCreator.GetPanel(), horizontalCreator.GetSizer(), wx.VERTICAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 
 		self.mediaCtrl, unused = leftArea.mediaCtrl(_("メディアコントロール"), self.onMediaStateChange, size=(300,300), sizerFlag=wx.EXPAND|wx.ALL, proportion=1, textLayout=None)
-		self.mediaCtrl.enableTabFocus(False)
 
 		self.markersListCtrl, unused = leftArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(500, 150))
 		self.installContextMenu()
@@ -130,6 +129,14 @@ class ShowVideoEditor(TabPanelBase):
 			self.cutTriggerButton.SetLabel(_("ここからカット"))
 		else:
 			self.cutTriggerButton.SetLabel(_("ここまでカット"))
+		# ファイルが読み込まれてなければ、全部のボタンを無効化する
+		if self._lastLoadedFile is None:
+			self.playButton.Enable(False)
+			self.backwardButton.Enable(False)
+			self.forwardButton.Enable(False)
+			self.changeIntervalButton.Enable(False)
+			self.gotoButton.Enable(False)
+			self.cutTriggerButton.Enable(False)
 
 	def onMediaStateChange(self, event):
 		self.updateButtons()
