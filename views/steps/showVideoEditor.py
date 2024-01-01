@@ -111,6 +111,7 @@ class ShowVideoEditor(TabPanelBase):
 		# end ファイルが変更された
 		self.mediaCtrl.Load(f)
 		self._lastLoadedFile = f
+		self.updateButtons()
 
 	def onDeactivated(self):
 		if self.mediaCtrl.GetState() == wx.media.MEDIASTATE_PLAYING:
@@ -130,13 +131,13 @@ class ShowVideoEditor(TabPanelBase):
 		else:
 			self.cutTriggerButton.SetLabel(_("ここまでカット"))
 		# ファイルが読み込まれてなければ、全部のボタンを無効化する
-		if self._lastLoadedFile is None:
-			self.playButton.Enable(False)
-			self.backwardButton.Enable(False)
-			self.forwardButton.Enable(False)
-			self.changeIntervalButton.Enable(False)
-			self.gotoButton.Enable(False)
-			self.cutTriggerButton.Enable(False)
+		buttonEnabled = self._lastLoadedFile is not None
+		self.playButton.Enable(buttonEnabled)
+		self.backwardButton.Enable(buttonEnabled)
+		self.forwardButton.Enable(buttonEnabled)
+		self.changeIntervalButton.Enable(buttonEnabled)
+		self.gotoButton.Enable(buttonEnabled)
+		self.cutTriggerButton.Enable(buttonEnabled)
 
 	def onMediaStateChange(self, event):
 		self.updateButtons()
