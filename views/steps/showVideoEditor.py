@@ -17,8 +17,7 @@ class ShowVideoEditor(TabPanelBase):
 		horizontalCreator = views.ViewCreator.ViewCreator(self.creator.GetMode(),self.creator.GetPanel(), self.creator.GetSizer(), wx.HORIZONTAL, 20, style=wx.ALL | wx.EXPAND,proportion=1, margin=0)
 		leftArea = views.ViewCreator.ViewCreator(horizontalCreator.GetMode(),horizontalCreator.GetPanel(), horizontalCreator.GetSizer(), wx.VERTICAL, 20, style=wx.ALL | wx.EXPAND,margin=0)
 
-		self.mediaCtrl, unused = leftArea.mediaCtrl(_("メディアコントロール"), self.onMediaStateChange, size=(300,300), sizerFlag=wx.EXPAND|wx.ALL, proportion=1, textLayout=None)
-		self.mediaCtrl.enableTabFocus(False)
+		self.mediaCtrl, unused = leftArea.mediaCtrl(_("メディアコントロール"), self.onMediaStateChange, size=(300,300), sizerFlag=wx.EXPAND|wx.ALL, proportion=1, textLayout=None, enableTabFocus=False)
 
 		self.markersListCtrl, unused = leftArea.listbox(_("カットする箇所"), style=wx.LB_SINGLE, size=(500, 150))
 		self.installContextMenu()
