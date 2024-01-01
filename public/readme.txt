@@ -1,8 +1,9 @@
 Parametric Video Processor -PVP-
 
 バージョン:　　ver.1.0.0
-	リリース:　　　2024-01-01
-	開発・配布元:　ACT Laboratory　(https://actlab.org/)
+リリース:　　　2024-01-01
+開発・配布元:　ACT Laboratory　(https://actlab.org/)
+リポジトリ: https://github.com/actlaboratory/PVP
 
 # 初めに
 
