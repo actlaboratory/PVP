@@ -68,7 +68,9 @@ class ShowVideoEditor(TabPanelBase):
 
 	def installContextMenu(self):
 		contextMenu = wx.Menu()
-		contextMenu.Append(1101, _("削除"))
+		self.contextMenuDelete = contextMenu.Append(1101, _("削除"))
+		self.contextMenuGoToCutStart = contextMenu.Append(1102, _("カット開始地点に移動"))
+		self.contextMenuGoToCutEnd = contextMenu.Append(1103, _("カット終了地点に移動"))
 		contextMenu.Bind(wx.EVT_MENU, self.onContextMenuSelect)
 		self.contextMenu = contextMenu
 
@@ -194,11 +196,32 @@ class ShowVideoEditor(TabPanelBase):
 			self.markersListCtrl.SetSelection(prevIndex)
 
 	def onContextMenu(self, event):
+		selectedIndex = self.markersListCtrl.GetSelection()
+		if selectedIndex == wx.NOT_FOUND:
+			return
+		# end 選択されていない
+		marker = self._cutMarkerList[selectedIndex]
+		if marker.endPoint is None:
+			self.contextMenuGoToCutEnd.Enable(False)
+		else:
+			self.contextMenuGoToCutEnd.Enable(True)
+		# end カット終了地点が明示的に設定されているかどうか
 		self.hPanel.PopupMenu(self.contextMenu, event.GetPosition())
 
 	def onContextMenuSelect(self, event):
-		if event.GetId() == 1101:
+		id = event.GetId()
+		if id == 1101:
 			self.deleteMarker()
+			return
+		# end 削除
+		if id == 1102:
+			self.mediaCtrl.Seek(domain.positionStrToMilliseconds(self._cutMarkerList[self.markersListCtrl.GetSelection()].startPoint), wx.FromStart)
+			return
+		# end カット開始地点に移動
+		if id == 1103:
+			self.mediaCtrl.Seek(domain.positionStrToMilliseconds(self._cutMarkerList[self.markersListCtrl.GetSelection()].endPoint), wx.FromStart)
+			return
+		# end カット終了地点に移動
 
 	def deleteMarker(self):
 		index = self.markersListCtrl.GetSelection()
