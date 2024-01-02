@@ -32,28 +32,23 @@ jobs:
         env:
           COMMIT_TIMESTAMP: ${{ github.event.head_commit.timestamp}}
 
-      - name: delete the snapshot release
-        uses: liudonghua123/delete-release-action@v1
-        with:
-          release_name: ${{ github.event.repository.name }}-latestcommit
-
       - name: Re-create the tag
-        uses: actions/github-script@v3
+        uses: actions/github-script@V7
         with:
           script: |
-            const repoName = context.repo.repo
-            const tagName = repoName + "-latestcommit"
-            github.git.deleteRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "tags/" + tagName
-            })
-            github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/" + tagName,
-              sha: context.sha
-            })
+            const { owner, repo } = context.repo
+            const tagName = repo + "-latestcommit"
+            try {
+              // Fetch the release by its tag
+              const { data: release } = github.rest.repos.getReleaseByTag({ owner, repo, tag: tagName })
+              // Delete the release
+              github.rest.repos.deleteRelease({ owner, repo, release_id: release.id })
+              github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
+              github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha
+            } catch (error) {
+              console.error(`Error deleting release with tag ${tag_name}: ${error.message}`)
+            }
+
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
