@@ -33,7 +33,7 @@ jobs:
           COMMIT_TIMESTAMP: ${{ github.event.head_commit.timestamp}}
 
       - name: Re-create the tag
-        uses: actions/github-script@V6
+        uses: actions/github-script@v7
         with:
           script: |
             const { owner, repo } = context.repo
