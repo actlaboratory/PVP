@@ -38,15 +38,30 @@ jobs:
           script: |
             const { owner, repo } = context.repo
             const tagName = repo + "-latestcommit"
-            // Fetch the release by its tag
-            const { data: release } = await github.rest.repos.getReleaseByTag({ owner, repo, tag: tagName })
-            // Delete the release if exists
-            if(release){
+            try {
+              // Fetch the release by its tag
+              const { data: release } = await github.rest.repos.getReleaseByTag({ owner, repo, tag: tagName })
+              // Delete the release if exists
               await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id })
+              console.log("deleted release");
+            } catch(err) {
+              if(err.status !== 404){
+                throw err;
+              }
+              console.log('No release found for deletion');
             }
-            console.log("deleted release");
-            await github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
-            await github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
+            try {
+              await github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
+              console.log("deleted tag");
+            } catch(err) {
+              console.log('Failed to delete tag'+err.message);
+            }
+            try {
+              await github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
+              console.log("created tag");
+            } catch(err) {
+              console.log('Failed to create tag'+err.message);
+            }
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
