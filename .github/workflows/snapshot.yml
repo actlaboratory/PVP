@@ -41,8 +41,10 @@ jobs:
             try {
               // Fetch the release by its tag
               const { data: release } = await github.rest.repos.getReleaseByTag({ owner, repo, tag: tagName })
-              // Delete the release
-              await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id })
+              // Delete the release if exists
+              if(release){
+                await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id })
+              }
               await github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
               await github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
             } catch (error) {
