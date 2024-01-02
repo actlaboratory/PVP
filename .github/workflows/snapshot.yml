@@ -51,13 +51,13 @@ jobs:
               console.log('No release found for deletion');
             }
             try {
-              await github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
+              await github.rest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
               console.log("deleted tag");
             } catch(err) {
               console.log('Failed to delete tag'+err.message);
             }
             try {
-              await github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
+              await github.rest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
               console.log("created tag");
             } catch(err) {
               console.log('Failed to create tag'+err.message);
@@ -89,7 +89,7 @@ jobs:
       - name: Deploy to GitHub
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: refs/tags/${{ github.event.repository.name }}-latestcommit
+          tag_name: ${{ github.event.repository.name }}-latestcommit
           body: Automatic build from master branch
           files: |
             ./${{ github.event.repository.name }}-*.zip
