@@ -48,9 +48,7 @@ jobs:
               console.log("deleted release");
               await github.lest.git.deleteRef({owner, repo, ref: "tags/" + tagName})
               await github.lest.git.createRef({owner, repo, ref: "refs/tags/" + tagName, sha: context.sha})
-            } catch (error) {
-              console.error(`Error deleting release with tag ${tagName}: ${error.message}`)
-            }
+            } 
 
 
       - name: Archive production artifacts
