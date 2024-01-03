@@ -7,10 +7,16 @@ on:
         description: Whether this is an official release
         default: false
         type: boolean
+    outputs:
+      build_version:
+        description: Version of the built package
+        value: ${{ jobs.build.outputs.build_version }}
 
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      build_version: ${{ steps.}}output_version.outputs.version
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -41,6 +47,14 @@ jobs:
           python tools\build.py
         env:
           COMMIT_TIMESTAMP: ${{ github.event.head_commit.timestamp}}
+
+      - name: output version
+        id: output_version
+        shell: python
+        run: |
+          import constants
+          with open("${{ env.GITHUB_OUTPUT }}", mode = "a") as f:
+            f.write("version="+constants.APP_VERSION)
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4

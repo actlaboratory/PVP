@@ -64,30 +64,9 @@ jobs:
             ./${{ github.event.repository.name }}-*.zip
             ./${{ github.event.repository.name }}-*.json
 
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          architecture: x86
-          python-version: 3.8
-          cache: pip
-
-      - name: Install wx
-        run: |
-          python -m pip install wxpython
-
       - name: register snapshot to actlab site
-        shell: python
         run: |
-          import sys
-          import os
-          sys.path.append(os.getcwd())
-          import constants
-          import urllib.request
-          print("register actlab site...")
-          with urllib.request.urlopen("https://stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version="+constants.APP_VERSION+"&password=${{ secrets.SCRIPT_PASSWORD }}") as response:
-            # レスポンスを表示
-            print(response.read().decode('utf-8'))
+          curl https://stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version=${{ needs.build.outputs.build_version }}&password=${{ secrets.SCRIPT_PASSWORD }}
 
   error_notify:
     runs-on: ubuntu-latest
