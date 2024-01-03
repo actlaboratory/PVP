@@ -8,7 +8,7 @@ on:
         default: false
         type: boolean
 
-job:
+jobs:
   build:
     runs-on: windows-latest
     steps:
