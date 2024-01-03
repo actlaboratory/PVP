@@ -94,6 +94,6 @@ jobs:
               "text": "Github actions build failed! <${{ github.server_url }}/${{ github.repository }}|${{ github.event.repository.name }}>のビルドが失敗しました。\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|対象のrun>お確認し、対応着手時・完了後は、本チャンネルにて経緯を報告ください。"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WORKFLOW_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
