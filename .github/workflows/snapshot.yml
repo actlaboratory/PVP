@@ -85,7 +85,7 @@ jobs:
           import constants
           import urllib.request
           print("register actlab site...")
-          with urllib.request.urlopen("https://${{ secrets.STG_USER }}:${{ secrets.STG_PASS }}@stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version="+constants.APP_VERSION+"&password=${{ secrets.SCRIPT_PASSWORD }}") as response:
+          with urllib.request.urlopen("https://stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version="+constants.APP_VERSION+"&password=${{ secrets.SCRIPT_PASSWORD }}") as response:
             # レスポンスを表示
             print(response.read().decode('utf-8'))
 
