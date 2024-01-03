@@ -53,6 +53,8 @@ jobs:
         id: output_version
         shell: python
         run: |
+          import os, sys
+          sys.path.append(os.getcwd())
           import constants
           with open("${{ env.GITHUB_OUTPUT }}", mode = "a") as f:
             f.write("version="+constants.APP_VERSION)
