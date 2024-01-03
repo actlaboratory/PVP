@@ -57,6 +57,7 @@ jobs:
       - name: Deploy to GitHub
         uses: softprops/action-gh-release@v1
         with:
+          name: Snapshot
           tag_name: ${{ github.event.repository.name }}-latestcommit
           body: Automatic build from master branch
           files: |
