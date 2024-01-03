@@ -16,7 +16,8 @@ jobs:
   build:
     runs-on: windows-latest
     outputs:
-      build_version: ${{ steps.}}output_version.outputs.version
+      build_version: ${{ steps.}}output_version.outputs.version }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
