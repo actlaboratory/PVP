@@ -66,7 +66,7 @@ jobs:
 
       - name: register snapshot to actlab site
         run: |
-          curl https://stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version=${{ needs.build.outputs.build_version }}&password=${{ secrets.SCRIPT_PASSWORD }}
+          curl "https://stg.actlab.org/api/addAlphaVersion?repo_name=${{ github.repository }}&commit_hash=${{ github.sha }}&version=${{ needs.build.outputs.build_version }}&password=${{ secrets.SCRIPT_PASSWORD }}"
 
   error_notify:
     runs-on: ubuntu-latest
