@@ -90,7 +90,9 @@ class build:
 			shutil.rmtree("build\\")
 
 	def makeSnapshotVersionNumber(self):
-		dt = datetime.datetime.fromisoformat(os.environ["COMMIT_TIMESTAMP"])
+		#日本標準時オブジェクト
+		JST = datetime.timezone(datetime.timedelta(hours=+9))
+		dt = datetime.datetime.fromisoformat(os.environ["COMMIT_TIMESTAMP"]).astimezone(JST)
 		major = f"{dt.year % 100:02d}{dt.month:02d}"
 		minor = str(dt.day)
 		patch = str(int(math.floor((dt.hour*3600+dt.minute*60+dt.second)/86400*1000)))
