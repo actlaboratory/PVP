@@ -56,7 +56,7 @@ jobs:
           import os, sys
           sys.path.append(os.getcwd())
           import constants
-          with open("${{ env.GITHUB_OUTPUT }}", mode = "a") as f:
+          with open(os.environ["GITHUB_OUTPUT"], mode = "a") as f:
             f.write("version="+constants.APP_VERSION)
 
       - name: Archive production artifacts
