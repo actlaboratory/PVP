@@ -68,6 +68,7 @@ jobs:
         shell: python
         run: |
           import sys
+          import os
           sys.path.append(os.getcwd())
           import constants
           import urllib.request
