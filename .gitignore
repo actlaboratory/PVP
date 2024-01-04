@@ -16,3 +16,4 @@ runCMD.bat
 *.po~
 temp/
 *.zip
+ffmpeg.exe
