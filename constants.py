@@ -37,7 +37,7 @@ HALF_CHECKED=wx.CHK_UNDETERMINED
 FULL_CHECKED=wx.CHK_CHECKED
 
 #build関連定数
-BASE_PACKAGE_URL = None
+BASE_PACKAGE_URL = "https://github.com/actlaboratory/PVP/releases/download/1.0.0/PVP-1.0.0.zip"
 PACKAGE_CONTAIN_ITEMS = (
     "ffmpeg.exe",
 )#パッケージに含めたいファイルやfolderがあれば指定
