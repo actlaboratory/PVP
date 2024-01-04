@@ -21,11 +21,13 @@ import subprocess
 import urllib.request
 import zipfile
 
+
 import diff_archiver
 
 import constants
 
-from tools import bumpup
+
+from tools import bumpup, ffmpegDownloader
 
 
 class build:
@@ -33,6 +35,10 @@ class build:
 		# appVeyorかどうかを判別し、処理をスタート
 		appveyor = self.setAppVeyor()
 		print("Starting build for %s(appveyor mode=%s)" % (constants.APP_NAME, appveyor))
+
+		# FFmpegがなければダウンロードする
+		if not os.path.isfile("ffmpeg.exe"):
+			self.downloadFFmpeg()
 
 		# パッケージのパスとファイル名を決定
 		package_path = os.path.join("dist", os.path.splitext(os.path.basename(constants.STARTUP_FILE))[0])
@@ -77,6 +83,9 @@ class build:
 				self.addUpdater(archive_name)
 			self.makePackageInfo(archive_name, patch_name, build_filename)
 		print("Build finished!")
+
+	def downloadFFmpeg(self):
+		ffmpegDownloader.downloadFFmpeg()
 
 	def runcmd(self,cmd):
 		proc=subprocess.Popen(cmd.split(), shell=True, stdout=1, stderr=2)
