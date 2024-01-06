@@ -141,6 +141,9 @@ def prepareCmdRunner(identifier, cmd, timestamp, onFinished = None, osOperation 
         timestamp,
         osOperation
     )
+    # Touch the log file here. Without this, the same log file path will be used for all runners since tasks are not executed in this preparation step.
+    f = osOperation.open(logFilePath, "w")
+    f.close()
     runner = CmdRunner(identifier, cmd, logFilePath, onFinished, osOperation)
     return runner
 
