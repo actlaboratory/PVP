@@ -60,4 +60,8 @@ def normalizeToFullPositionStr(positionStr):
     if m3 is not None:
         return millisecondsToPositionStr(int(m3.group(1)) * 1000 * 60 * 60 + int(m3.group(2)) * 1000 * 60 + int(m3.group(3)) * 1000)
     # end if
-    return positionStr
+    m4 = re.match(r"^(\d+):(\d+):(\d+)\.(\d{1,3})$", positionStr)
+    if m4 is not None:
+        return positionStr
+    #end if
+    raise ValueError("Invalid position string: %s" % positionStr)
