@@ -52,4 +52,5 @@ class TestPositionStr(unittest.TestCase):
         self.assertEqual(domain.normalizeToFullPositionStr("01:00:00"), "01:00:00.000")
         self.assertEqual(domain.normalizeToFullPositionStr("01:01:01"), "01:01:01.000")
         self.assertEqual(domain.normalizeToFullPositionStr("00:00:00.000"), "00:00:00.000")
+        self.assertRaises(ValueError, domain.normalizeToFullPositionStr, "00:00:13.4444")
         self.assertRaises(ValueError, domain.normalizeToFullPositionStr, "aaaa")
