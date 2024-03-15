@@ -87,7 +87,7 @@ def cutVideoCommand(task):
         raise ValueError("cutMarkers must not be empty")
     # end if
     cuts = []
-    if not cutMarkers[0].pointsFileTop:
+    if not cutMarkers[0].pointsFileTop():
         cuts.append((millisecondsToPositionStr(0), cutMarkers[0].startPoint))
     # end if
     for i in range(len(cutMarkers) - 1):
