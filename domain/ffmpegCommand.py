@@ -118,6 +118,8 @@ def cutVideoCommand(task):
                 "0",
                 "-i",
                 os.path.join(tempdirRoot(), "concats", "%s_parts.txt" % withoutExtension),
+                "-map",
+                "0",
                 "-c",
                 "copy",
                 task.nthStep(3).getValue()
@@ -141,6 +143,8 @@ def makeCutCommand(input, start, end, part):
     withoutExtension = os.path.basename(input).split(".")[0]
     extension = os.path.basename(input).split(".")[1]
     cmd.extend([
+        "-map",
+        "0",
         "-c",
         "copy",
         os.path.join(root, "concats", "%s_part%d.%s" % (withoutExtension, part, extension))
