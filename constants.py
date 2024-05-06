@@ -8,8 +8,8 @@ import wx
 APP_FULL_NAME = "Parametric Video Processor"#アプリケーションの完全な名前
 APP_NAME="PVP"#アプリケーションの名前
 APP_ICON = None
-APP_VERSION="1.0.0"
-APP_LAST_RELEASE_DATE="2024-01-01"
+APP_VERSION="1.0.1"
+APP_LAST_RELEASE_DATE="2024-05-06"
 APP_COPYRIGHT_YEAR="2023-2024"
 APP_LICENSE="Apache License 2.0"
 APP_DEVELOPERS="Yukio Nozawa"
@@ -37,7 +37,7 @@ HALF_CHECKED=wx.CHK_UNDETERMINED
 FULL_CHECKED=wx.CHK_CHECKED
 
 #build関連定数
-BASE_PACKAGE_URL = None
+BASE_PACKAGE_URL = "https://github.com/actlaboratory/PVP/releases/download/1.0.0/PVP-1.0.0.zip"
 PACKAGE_CONTAIN_ITEMS = (
     "ffmpeg.exe",
 )#パッケージに含めたいファイルやfolderがあれば指定

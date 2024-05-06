@@ -4,13 +4,7 @@ import views.ViewCreator
 from logging import getLogger
 from views.baseDialog import *
 import simpleDialog
-
-validPatterns = [
-	re.compile(r"^\d{1,2}$"),
-	re.compile(r"^\d{1,2}:\d{1,2}$"),
-	re.compile(r"^\d{1,2}:\d{1,2}:\d{1,2}$"),
-	re.compile(r"^\d{1,2}:\d{1,2}:\d{1,2}:\d{1,3}$"),
-]
+import domain
 
 class DurationInputDialog(BaseDialog):
 	def __init__(self, parent=None, defaultValue=""):
@@ -48,12 +42,8 @@ class DurationInputDialog(BaseDialog):
 
 	def validate(self):
 		val = self.edit.GetValue()
-		found = False
-		for pattern in validPatterns:
-			if pattern.match(val):
-				found = True
-				break
-		if found:
+		try:
+			domain.normalizeToFullPositionStr(val)
 			return True
-		# end パターンマッチ
-		simpleDialog.errorDialog(_("入力された内容を時間として読み取れませんでした。"), self.wnd)
+		except ValueError:
+			simpleDialog.errorDialog(_("入力された内容を時間として読み取れませんでした。"), self.wnd)
