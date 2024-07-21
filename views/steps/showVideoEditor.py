@@ -107,6 +107,7 @@ class ShowVideoEditor(TabPanelBase):
 			self._cutMarkerList = []
 			self._lastStartPoint = None
 			self._lastEndPoint = None
+			self._lastPlayedPos = 0
 			self.markersListCtrl.Clear()
 		# end ファイルが変更された
 		self.mediaCtrl.Load(f)
@@ -144,9 +145,18 @@ class ShowVideoEditor(TabPanelBase):
 
 	def onPlayButtonClick(self, event):
 		if self.mediaCtrl.GetState() == wx.media.MEDIASTATE_PLAYING:
-			self.mediaCtrl.Pause()
+			self.pauseMedia()
 		else:
-			self.mediaCtrl.Play()
+			self.playMedia()
+
+	def playMedia(self):
+		self._lastPlayedPos	= self.mediaCtrl.Tell()
+		self.mediaCtrl.Play()
+
+	def pauseMedia(self):
+		self.mediaCtrl.Pause()
+		if wx.GetKeyState(wx.WXK_SHIFT):
+			self.mediaCtrl.Seek(self._lastPlayedPos)
 
 	def onBackwardButtonClick(self, event):
 		length = self.mediaCtrl.Length()
